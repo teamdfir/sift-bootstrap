@@ -4,6 +4,8 @@ Overview
 
 Examples
 ========
+Current Requirements -- Ubuntu 12.04 Desktop, User Logged In via the Unity Desktop, Open Terminal
+
 Install Only
 
 ```
