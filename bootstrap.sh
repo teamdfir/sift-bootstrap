@@ -210,7 +210,7 @@ configure_ubuntu_skin() {
 	done
 	
 	if [ ! -L /home/$SUDO_USER/.config/autostart ]; then
-		sudo -u sift cp /usr/share/sift/other/gnome-terminal.desktop /home/$SUDO_USER/.config/autostart
+		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop /home/$SUDO_USER/.config/autostart
 	fi
     
 	if [ ! -e /usr/share/unity-greeter/logo.png.ubuntu ]; then
