@@ -1,14 +1,15 @@
 Overview
 ========
-**Warning:** this is under heavy development command line options WILL change! Always check back here for the latest.
+Welcome to the SANS Investigative Forensic Toolkit Installation Bootstrap Script. 
+
+**Requirements:** Ubuntu 12.04 LTS Dekstop, Logged In User (as in GUI, terminal (F1, F2)), Package Manager Not Running
+
+**Warning:** this is under heavy development command line options WILL change! Always check back here for the latest. Right now the requirements are pretty strict we will work to lessen them over time.
 
 **If you are running into errors, please check the troubleshooting section first**
 
 Examples
 ========
-Current Requirements -- Ubuntu 12.04 Desktop, User Logged In via the Unity Desktop, Open Terminal
-
-
 Using `wget` to install the latest 
 
 ```
@@ -45,6 +46,7 @@ If you are receiving errors, please look at the Issues queue and see if there is
 
 If you have a unique issue, please create a new Issue, and include the output of your terminal from the bootstrap script down until the error.
 
+If you are getting apt-get errors, please make sure that the GUI package manager is not running.
 
 Credit
 ======
