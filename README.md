@@ -8,6 +8,11 @@ Welcome to the SANS Investigative Forensic Toolkit Installation Bootstrap Script
 
 **If you are running into errors, please check the troubleshooting section first**
 
+Documentation
+=============
+Check out the latest documentation for SIFT at http://sift.readthedocs.org/en/latest
+
+
 Examples
 ========
 Using `wget` to install the latest 
