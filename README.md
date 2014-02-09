@@ -2,35 +2,40 @@ Overview
 ========
 Welcome to the SANS Investigative Forensic Toolkit Installation Bootstrap Script. 
 
-**Requirements:** Ubuntu 12.04 LTS Dekstop, Logged In User (as in GUI, terminal (F1, F2)), Package Manager Not Running
+**Requirements:** Ubuntu 12.04 LTS Dekstop, Logged In User (as in GUI, not terminal (F1, F2)), Package Manager Not Running
 
 **Warning:** this is under heavy development command line options WILL change! Always check back here for the latest. Right now the requirements are pretty strict we will work to lessen them over time.
 
 **If you are running into errors, please check the troubleshooting section first**
+
+Documentation
+=============
+Check out the latest documentation for SIFT at http://sift.readthedocs.org/en/latest
+
 
 Examples
 ========
 Using `wget` to install the latest 
 
 ```
-wget -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
+wget --quiet -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
 ```
 
 Using `curl` to install the latest
 ```
-curl -L https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
+curl --silent -L https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
 ```
 
 Install, Configure, and Theme
 
 ```
-wget -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i -s -y
+wget --quiet -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i -s -y
 ```
 
 Configure Only
 
 ```
-wget -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -c
+wget --quiet -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -c
 ```
 
 Options

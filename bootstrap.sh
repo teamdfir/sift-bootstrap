@@ -144,10 +144,12 @@ install_ubuntu_deps() {
 
 
 install_ubuntu() {
+    packages="sift 4n6time-static aeskeyfind afflib-tools afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libafflib0 libafflib-dev libbde libbde-tools libesedb libesedb-tools libevt libevt-tools libevtx libevtx-tools libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde libfvde-tools liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd"
+
     if [ "$@" = "dev" ]; then
-        packages="sift 4n6time-static aeskeyfind afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libbde libesedb libevt libevtx libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd"
+        packages="${packages}"
     elif [ "$@" = "stable" ]; then
-        packages="sift"
+        packages="${packages}"
     fi
 
     __apt_get_install_noinput ${packages} || return 1
@@ -222,6 +224,21 @@ configure_ubuntu_skin() {
 }
 
 
+complete_message() {
+    echo
+    echo "Installation Complete!"
+    echo 
+    echo "The documentation included with the SIFT package is for the 2.14 version"
+    echo "it is included as a reference, but please realize there may be things that"
+    echo "do not apply"
+    echo 
+    echo "New documentation is in the works."
+    echo
+    echo "http://sift.readthedocs.org"
+    echo
+}
+
+
 CONFIGURE_ONLY=0
 SKIN=0
 INSTALL=1
@@ -278,8 +295,7 @@ done
 shift $(($OPTIND-1))
 
 if [ "$#" -eq 0 ]; then
-    # will switch to stable later
-    ITYPE="dev"
+    ITYPE="stable"
 else
     __check_unparsed_options "$*"
     ITYPE=$1
@@ -287,7 +303,7 @@ else
 fi
 
 # Check installation type
-if [ "$(echo $ITYPE | egrep '(dev)')x" = "x" ]; then
+if [ "$(echo $ITYPE | egrep '(dev|stable)')x" = "x" ]; then
     echoerror "Installation type \"$ITYPE\" is not known..."
     exit 1
 fi
@@ -314,8 +330,24 @@ if [ "$SKIN" -eq 1 ] && [ "$YESTOALL" -eq 0 ]; then
 fi
 
 if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
-    install_ubuntu_deps $ITYPE
-    install_ubuntu $ITYPE
+    STATUS_DEPS=$(install_ubuntu_deps $ITYPE)
+    
+    if [ "$STATUS_DEPS" -eq 1 ]; then
+        echo
+        echo "ERROR: Unfortunately there was a problem installing some dependencies."
+        echo "ERROR: Scroll up for the specific error"
+        echo
+        exit 100
+    fi
+
+    STATUS_INSTALL=$(install_ubuntu $ITYPE)
+
+    if [ "$STATUS_INSTALL" -eq 1 ]; then
+        echo
+        echo "ERROR: Unable to finish installation, an error occurred"
+        echo
+        exit 110
+    fi
 fi
 
 configure_ubuntu
@@ -323,3 +355,5 @@ configure_ubuntu
 if [ "$SKIN" -eq 1 ]; then
     configure_ubuntu_skin
 fi
+
+complete_message
