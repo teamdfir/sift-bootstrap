@@ -224,6 +224,21 @@ configure_ubuntu_skin() {
 }
 
 
+complete_message() {
+    echo
+    echo "Installation Complete!"
+    echo 
+    echo "The documentation included with the SIFT package is for the 2.14 version"
+    echo "it is included as a reference, but please realize there may be things that"
+    echo "do not apply"
+    echo 
+    echo "New documentation is in the works."
+    echo
+    echo "http://sift.readthedocs.org"
+    echo
+}
+
+
 CONFIGURE_ONLY=0
 SKIN=0
 INSTALL=1
@@ -315,8 +330,24 @@ if [ "$SKIN" -eq 1 ] && [ "$YESTOALL" -eq 0 ]; then
 fi
 
 if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
-    install_ubuntu_deps $ITYPE
-    install_ubuntu $ITYPE
+    STATUS_DEPS=install_ubuntu_deps $ITYPE
+    
+    if [ $STATUS_DEPS -eq 1 ]; then
+        echo
+        echo "ERROR: Unfortunately there was a problem installing some dependencies."
+        echo "ERROR: Scroll up for the specific error"
+        echo
+        exit 100
+    fi
+
+    STATUS_INSTALL=install_ubuntu $ITYPE
+
+    if [ $STATUS_INSTALL -eq 1 ]; then
+        echo
+        echo "ERROR: Unable to finish installation, an error occurred"
+        echo
+        exit 110
+    fi
 fi
 
 configure_ubuntu
@@ -324,3 +355,5 @@ configure_ubuntu
 if [ "$SKIN" -eq 1 ]; then
     configure_ubuntu_skin
 fi
+
+complete_message
