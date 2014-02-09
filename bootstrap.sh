@@ -330,24 +330,8 @@ if [ "$SKIN" -eq 1 ] && [ "$YESTOALL" -eq 0 ]; then
 fi
 
 if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
-    STATUS_DEPS=$(install_ubuntu_deps $ITYPE)
-    
-    if [ "$STATUS_DEPS" -eq 1 ]; then
-        echo
-        echo "ERROR: Unfortunately there was a problem installing some dependencies."
-        echo "ERROR: Scroll up for the specific error"
-        echo
-        exit 100
-    fi
-
-    STATUS_INSTALL=$(install_ubuntu $ITYPE)
-
-    if [ "$STATUS_INSTALL" -eq 1 ]; then
-        echo
-        echo "ERROR: Unable to finish installation, an error occurred"
-        echo
-        exit 110
-    fi
+    install_ubuntu_deps $ITYPE
+    install_ubuntu $ITYPE
 fi
 
 configure_ubuntu
