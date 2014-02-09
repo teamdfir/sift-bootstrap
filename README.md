@@ -18,24 +18,24 @@ Examples
 Using `wget` to install the latest 
 
 ```
-wget -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
+wget --quiet -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
 ```
 
 Using `curl` to install the latest
 ```
-curl -L https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
+curl --silent -L https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i
 ```
 
 Install, Configure, and Theme
 
 ```
-wget -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i -s -y
+wget --quiet -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -i -s -y
 ```
 
 Configure Only
 
 ```
-wget -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -c
+wget --quiet -O - https://raw.github.com/sans-dfir/sift-bootstrap/master/bootstrap.sh | sudo sh -s -- -c
 ```
 
 Options
