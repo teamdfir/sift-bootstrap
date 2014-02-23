@@ -71,13 +71,20 @@ __apt_get_install_noinput() {
     apt-get install -y -o DPkg::Options::=--force-confold $@; return $?
 }
 
-
 #---  FUNCTION  ----------------------------------------------------------------
 #          NAME:  __apt_get_upgrade_noinput
 #   DESCRIPTION:  (DRY) apt-get upgrade with noinput options
 #-------------------------------------------------------------------------------
 __apt_get_upgrade_noinput() {
     apt-get upgrade -y -o DPkg::Options::=--force-confold $@; return $?
+}
+
+#---  FUNCTION  ----------------------------------------------------------------
+#          NAME:  __pip_install_noinput
+#   DESCRIPTION:  (DRY)
+#-------------------------------------------------------------------------------
+__pip_install_noinput() {
+    pip --quiet install $@; return $?;
 }
 
 
@@ -144,15 +151,19 @@ install_ubuntu_deps() {
 
 
 install_ubuntu() {
-    packages="sift 4n6time-static aeskeyfind afflib-tools afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libafflib0 libafflib-dev libbde libbde-tools libesedb libesedb-tools libevt libevt-tools libevtx libevtx-tools libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde libfvde-tools liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd"
+    packages="sift 4n6time-static aeskeyfind afflib-tools afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libafflib0 libafflib-dev libbde libbde-tools libesedb libesedb-tools libevt libevt-tools libevtx libevtx-tools libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde libfvde-tools liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-dev python-pip python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd"
+    pip_packages="rekall"
 
     if [ "$@" = "dev" ]; then
         packages="${packages}"
+        pip_packages="{$pip_packages}"
     elif [ "$@" = "stable" ]; then
         packages="${packages}"
+        pip_packages="{$pip_packages}"
     fi
 
     __apt_get_install_noinput ${packages} || return 1
+    __pip_install_noinput ${pip_packages} || return 1
 
     return 0
 }
