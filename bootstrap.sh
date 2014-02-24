@@ -205,6 +205,13 @@ configure_ubuntu() {
 			mkdir -p /mnt/shadow/vss$NUM
 		fi
 	done
+	
+	if [ ! -L /usr/bin/vol.py ]; then
+		ln -s /usr/bin/vol /usr/bin/vol.py
+	fi
+	if [ ! -L /usr/bin/log2timeline ]; then
+		ln -s /usr/bin/log2timeline_legacy /usr/bin/log2timeline
+	fi
 }
 
 configure_ubuntu_skin() {
