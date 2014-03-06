@@ -248,6 +248,11 @@ configure_ubuntu_skin() {
 	fi
 
 	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
+	
+	OLD_HOSTNAME=$(hostname)
+	sed -i "s/$OLD_HOSTNAME/sansforensics/g" /etc/hosts
+	echo "sansforensics" > /etc/hostname
+	hostname sansforensics
 }
 
 
@@ -265,6 +270,12 @@ complete_message() {
     echo
 }
 
+complete_message_skin() {
+    echo "The hostname was changed, you should relogin or reboot for it to take full effect."
+    echo
+    echo "sudo reboot"
+    echo
+}
 
 CONFIGURE_ONLY=0
 SKIN=0
@@ -369,3 +380,7 @@ if [ "$SKIN" -eq 1 ]; then
 fi
 
 complete_message
+
+if [ "$SKIN" -eq 1 ]; then
+    complete_message_skin
+fi
