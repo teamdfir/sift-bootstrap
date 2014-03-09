@@ -84,7 +84,7 @@ __apt_get_upgrade_noinput() {
 #   DESCRIPTION:  (DRY)
 #-------------------------------------------------------------------------------
 __pip_install_noinput() {
-    pip install $@; return $?
+    pip install --upgrade $@; return $?
 }
 
 
@@ -164,7 +164,7 @@ install_ubuntu() {
 }
 
 install_pip_packages() {
-    pip_packages="rekall"
+    pip_packages="rekall docopt"
 
     if [ "$@" = "dev" ]; then
         pip_packages="$pip_packages"
