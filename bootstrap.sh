@@ -182,7 +182,7 @@ configure_ubuntu() {
 		mkdir -p /cases
 	fi
 
-	for dir in usb vss shadow
+	for dir in usb vss shadow windows_mount e01 aff ewf bde iscsi
 	do
 		if [ ! -d /mnt/$dir ]; then
 			mkdir -p /mnt/$dir
@@ -203,6 +203,9 @@ configure_ubuntu() {
 	do
 		if [ ! -d /mnt/shadow/vss$NUM ]; then
 			mkdir -p /mnt/shadow/vss$NUM
+		fi
+		if [ ! -d /mnt/shadow_mount/vss$NUM ]; then
+			mkdir -p /mnt/shadow_mount/vss$NUM
 		fi
 	done
 	
