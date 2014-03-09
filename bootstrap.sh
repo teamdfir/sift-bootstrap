@@ -218,6 +218,9 @@ configure_ubuntu() {
 	if [ ! -L /usr/bin/kedit ]; then
 		ln -s /usr/bin/gedit /usr/bin/kedit
 	fi
+	if [ ! -L /usr/bin/mount_ewf.py ] && [ ! -e /usr/bin/mount_ewf.py ]; then
+		ln -s /usr/bin/ewfmount /usr/bin/mount_ewf.py
+	fi
 }
 
 configure_ubuntu_skin() {
