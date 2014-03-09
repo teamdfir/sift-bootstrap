@@ -212,6 +212,9 @@ configure_ubuntu() {
 	if [ ! -L /usr/bin/log2timeline ]; then
 		ln -s /usr/bin/log2timeline_legacy /usr/bin/log2timeline
 	fi
+	if [ ! -L /usr/bin/kedit ]; then
+		ln -s /usr/bin/gedit /usr/bin/kedit
+	fi
 }
 
 configure_ubuntu_skin() {
