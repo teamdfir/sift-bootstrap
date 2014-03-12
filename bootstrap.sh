@@ -258,6 +258,14 @@ configure_ubuntu_skin() {
 
 	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
 
+	# Checkout code from sift-files and put these files into place
+	CDIR=$(pwd)
+	git clone https://github.com/sans-dfir/sift-files /tmp/sift-files
+	cd /tmp/sift-files
+	bash install.sh
+	cd $CDIR
+	rm -r -f /tmp/sift-files
+
 	OLD_HOSTNAME=$(hostname)
 	sed -i "s/$OLD_HOSTNAME/sansforensics/g" /etc/hosts
 	echo "sansforensics" > /etc/hostname
