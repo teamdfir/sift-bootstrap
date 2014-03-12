@@ -127,6 +127,9 @@ __check_unparsed_options() {
     fi
 }
 
+configure_cpan() {
+    (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan > /dev/null
+}
 
 usage() {
     echo "usage"
@@ -175,6 +178,11 @@ install_pip_packages() {
     __pip_install_noinput $pip_packages || return 1
 
     return 0
+}
+
+install_perl_modules() {
+	# Required by macl.pl script
+	perl -MCPAN -e "install Net::Wigle" > /dev/null
 }
 
 configure_ubuntu() {
@@ -388,6 +396,8 @@ if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
     install_ubuntu_deps $ITYPE
     install_ubuntu $ITYPE
     install_pip_packages $ITYPE
+    configure_cpan
+    install_perl_modules
 fi
 
 configure_ubuntu
