@@ -275,9 +275,9 @@ configure_ubuntu_skin() {
 	rm -r -f /tmp/sift-files
 
 	OLD_HOSTNAME=$(hostname)
-	sed -i "s/$OLD_HOSTNAME/sansforensics/g" /etc/hosts
-	echo "sansforensics" > /etc/hostname
-	hostname sansforensics
+	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
+	echo "siftworkstation" > /etc/hostname
+	hostname siftworkstation
 }
 
 
