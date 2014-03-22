@@ -277,6 +277,8 @@ configure_ubuntu_skin() {
 	cd $CDIR
 	rm -r -f /tmp/sift-files
 
+	service smbd restart
+
 	OLD_HOSTNAME=$(hostname)
 	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
 	echo "siftworkstation" > /etc/hostname
