@@ -188,6 +188,9 @@ install_perl_modules() {
 configure_ubuntu() {
 	if [ ! -d /cases ]; then
 		mkdir -p /cases
+		chown $SUDO_USER:$SUDO_USER /cases
+		chmod 775 /cases
+		chmod g+s /cases
 	fi
 
 	for dir in usb vss shadow windows_mount e01 aff ewf bde iscsi
