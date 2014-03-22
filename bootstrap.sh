@@ -279,6 +279,10 @@ configure_ubuntu_skin() {
 
 	service smbd restart
 
+	# Make sure to remove all ^M from regripper plugins
+	# Not sure why they are there in the first place ...
+	dos2unix -ascii /usr/share/regripper/*
+
 	OLD_HOSTNAME=$(hostname)
 	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
 	echo "siftworkstation" > /etc/hostname
