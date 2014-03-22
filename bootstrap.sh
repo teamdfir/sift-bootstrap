@@ -247,6 +247,9 @@ configure_ubuntu_skin() {
 		sudo -u $SUDO_USER ln -s /mnt /home/$SUDO_USER/Desktop/mount_points
 	fi
 
+	# Clean up broken symlinks
+	find -L /home/$SUDO_USER/Desktop -type l -delete
+
 	for file in /usr/share/sift/resources/*.pdf
 	do
 		base=`basename $file`
