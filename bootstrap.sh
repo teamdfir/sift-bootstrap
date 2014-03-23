@@ -280,7 +280,13 @@ configure_ubuntu_skin() {
 	cd $CDIR
 	rm -r -f /tmp/sift-files
 
+	# Make sure we replace the SIFT_USER template with our actual
+	# user so there is write permissions to samba.
+	sed -i "s/SIFT_USER/$SUDO_USER/g" /etc/samba/smb.conf
+
+	# Restart samba services 
 	service smbd restart
+	service nmbd restart
 
 	# Make sure to remove all ^M from regripper plugins
 	# Not sure why they are there in the first place ...
