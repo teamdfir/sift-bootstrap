@@ -288,6 +288,9 @@ configure_ubuntu_skin() {
 	service smbd restart
 	service nmbd restart
 
+	# Disable services
+	update-rc.d tor disable
+
 	# Make sure to remove all ^M from regripper plugins
 	# Not sure why they are there in the first place ...
 	dos2unix -ascii /usr/share/regripper/*
