@@ -299,6 +299,16 @@ configure_ubuntu_skin() {
 	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
 	echo "siftworkstation" > /etc/hostname
 	hostname siftworkstation
+
+	if ! grep -i "set -o noclobber" $HOME/.bashrc > /dev/null 2>&1
+	then
+		echo "set -o noclobber" >> $HOME/.bashrc
+	fi
+
+	if ! grep -i "alias mountwin" $HOME/.bash_aliases > /dev/null 2>&1
+	then
+		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> $HOME/.bash_aliases
+	fi
 }
 
 
