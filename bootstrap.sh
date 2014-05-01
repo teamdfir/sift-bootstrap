@@ -167,7 +167,7 @@ install_ubuntu() {
 }
 
 install_pip_packages() {
-    pip_packages="rekall docopt python-evtx"
+    pip_packages="rekall docopt python-evtx python-registry"
 
     if [ "$@" = "dev" ]; then
         pip_packages="$pip_packages"
