@@ -309,6 +309,12 @@ configure_ubuntu_skin() {
 	then
 		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> $HOME/.bash_aliases
 	fi
+	
+	# For SIFT VM, root is used frequently, set the alias there too.
+	if ! grep -i "alias mountwin" /root/.bash_aliases > /dev/null 2>&1
+	then
+		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> /root/.bash_aliases
+	fi
 }
 
 
