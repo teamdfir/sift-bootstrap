@@ -109,20 +109,16 @@ __enable_universe_repository() {
     return 0
 }
 
-__enable_google_repository() {
-  if [ "x$(grep -R \"dl.google.com/linux/chrome\" /etc/apt/sources.list /etc/apt/sources.list.d/ | grep -v '#')" != "x" ]; then
-      # The universe repository is already enabled
-      return 0
-  fi
-
-  echodebug "Enabling the Google Chrome repository"
+__install_google_chrome() {
+  echodebug "Install Google Chrome"
   
   wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
 
-  add-apt-repository -y "deb http://dl.google.com/linux/chrome/deb/ stable main" || return 1
+  cd /tmp && wget -q -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  
+  dpkg -i /tmp/google-chrome-stable_current_amd64.deb || return 1
 
   return 0
-  
 }
 
 __check_unparsed_options() {
