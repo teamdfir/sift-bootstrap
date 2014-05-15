@@ -154,8 +154,6 @@ install_ubuntu_deps() {
     __apt_get_install_noinput python-software-properties || return 1
 
     __enable_universe_repository || return 1
-    
-    __enable_google_repository || return 1
 
     add-apt-repository -y ppa:sift/$@ || return 1
 
@@ -446,6 +444,7 @@ fi
 if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
     install_ubuntu_deps $ITYPE
     install_ubuntu $ITYPE
+    __install_google_chrome
     install_pip_packages $ITYPE
     configure_cpan
     install_perl_modules
