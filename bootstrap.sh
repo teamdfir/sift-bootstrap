@@ -116,6 +116,8 @@ __enable_google_repository() {
   fi
 
   echodebug "Enabling the Google Chrome repository"
+  
+  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
 
   add-apt-repository -y "deb http://dl.google.com/linux/chrome/deb/ stable main" || return 1
 
