@@ -109,18 +109,6 @@ __enable_universe_repository() {
     return 0
 }
 
-__install_google_chrome() {
-  echodebug "Install Google Chrome"
-  
-  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add - 
-
-  cd /tmp && wget -q -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-  
-  dpkg -i /tmp/google-chrome-stable_current_amd64.deb || return 1
-
-  return 0
-}
-
 __check_unparsed_options() {
     shellopts="$1"
     # grep alternative for SunOS
@@ -149,23 +137,35 @@ usage() {
 }
 
 install_ubuntu_deps() {
-    apt-get update
+    echoinfo "Updating your APT Repositories ... "
+    
+    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
-    __apt_get_install_noinput python-software-properties || return 1
+    echoinfo "Installing Python Software Properies ... "
 
-    __enable_universe_repository || return 1
+    __apt_get_install_noinput python-software-properties >> $HOME/sift-install.log 2>&1  || return 1
 
-    add-apt-repository -y ppa:sift/$@ || return 1
+    echoinfo "Enabling Universal Repository ... "
 
-    apt-get update
+    __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
 
-    __apt_get_upgrade_noinput || return 1
+    echoinfo "Adding SIFT Repository: $@"
+    
+    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Updating Repository Package List ..."
+
+    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Upgrading all packages to latest version ..."
+
+    __apt_get_upgrade_noinput >> $HOME/sift-install.log 2>&1 || return 1
 
     return 0
 }
 
 install_ubuntu() {
-    packages="sift sift-scripts 4n6time-static aeskeyfind afflib-tools afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libafflib0 libafflib-dev libbde libbde-tools libesedb libesedb-tools libevt libevt-tools libevtx libevtx-tools libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde libfvde-tools liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-dev python-pip python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd vmfs-tools guymager mantaray python-fuse samba open-iscsi curl git system-config-samba libpff libpff-dev libpff-tools libpff-python xfsprogs gawk fuse-exfat exfat-utils google-chrome-stable"
+    packages="sift sift-scripts 4n6time-static aeskeyfind afflib-tools afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libafflib0 libafflib-dev libbde libbde-tools libesedb libesedb-tools libevt libevt-tools libevtx libevtx-tools libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde libfvde-tools liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-dev python-pip python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd vmfs-tools guymager mantaray python-fuse samba open-iscsi curl git system-config-samba libpff libpff-dev libpff-tools libpff-python xfsprogs gawk fuse-exfat exfat-utils google-chrome-stable xpdf feh pyew radare radare2 bokken pev tcpick pdftk sslsniff dsniff"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -173,13 +173,26 @@ install_ubuntu() {
         packages="$packages"
     fi
 
-    __apt_get_install_noinput $packages || return 1
+    ERROR=0
+    for PACKAGE in $packages; do
+        CURRENT_ERROR=0
+        echoinfo "Installing Package: $PACKAGE"
+        __apt_get_install_noinput $package >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
+        if [ $CURRENT_ERROR -eq 1 ]; then
+            echoerror "Package Install Failure: $PACKAGE"
+        fi
+    done
+
+    if [ $ERROR -ne 0 ]; then
+        echoerror
+        return 1
+    fi
 
     return 0
 }
 
 install_pip_packages() {
-    pip_packages="rekall docopt python-evtx python-registry six construct"
+    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile"
 
     if [ "$@" = "dev" ]; then
         pip_packages="$pip_packages"
@@ -187,7 +200,20 @@ install_pip_packages() {
         pip_packages="$pip_packages"
     fi
 
-    __pip_install_noinput $pip_packages || return 1
+    ERROR=0
+    for PACKAGE in $pip_packages; do
+        CURRENT_ERROR=0
+        echoinfo "Installing Python Package: $PACKAGE"
+        __pip_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
+        if [ $CURRENT_ERROR -eq 1 ]; then
+            echoerror "Python Package Install Failure: $PACKAGE"
+        fi
+    done
+
+    if [ $ERROR -ne 0 ]; then
+        echoerror
+        return 1
+    fi
 
     return 0
 }
@@ -285,10 +311,11 @@ configure_ubuntu_skin() {
 	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
 
 	# Checkout code from sift-files and put these files into place
+    echoinfo "Installing SIFT Files"
 	CDIR=$(pwd)
-	git clone https://github.com/sans-dfir/sift-files /tmp/sift-files
+	git clone https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
 	cd /tmp/sift-files
-	bash install.sh
+	bash install.sh >> $HOME/sift-install.log 2>&1
 	cd $CDIR
 	rm -r -f /tmp/sift-files
 
@@ -297,15 +324,15 @@ configure_ubuntu_skin() {
 	sed -i "s/SIFT_USER/$SUDO_USER/g" /etc/samba/smb.conf
 
 	# Restart samba services 
-	service smbd restart
-	service nmbd restart
+	service smbd restart >> $HOME/sift-install.log 2>&1
+	service nmbd restart >> $HOME/sift-install.log 2>&1
 
 	# Disable services
-	update-rc.d tor disable
+	update-rc.d tor disable >> $HOME/sift-install.log 2>&1
 
 	# Make sure to remove all ^M from regripper plugins
 	# Not sure why they are there in the first place ...
-	dos2unix -ascii /usr/share/regripper/*
+	dos2unix -ascii /usr/share/regripper/* >> $HOME/sift-install.log 2>&1
 
 	OLD_HOSTNAME=$(hostname)
 	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
@@ -444,7 +471,6 @@ fi
 if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
     install_ubuntu_deps $ITYPE
     install_ubuntu $ITYPE
-    __install_google_chrome
     install_pip_packages $ITYPE
     configure_cpan
     install_perl_modules
