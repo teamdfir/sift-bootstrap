@@ -136,7 +136,7 @@ usage() {
     exit 1
 }
 
-install_ubuntu_deps() {
+install_ubuntu_12.04_deps() {
     echoinfo "Updating your APT Repositories ... "
     
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
@@ -163,9 +163,207 @@ install_ubuntu_deps() {
 
     return 0
 }
+install_ubuntu_14.04_deps() {
+    install_ubuntu_12.04_deps $@
+}
 
-install_ubuntu() {
-    packages="sift sift-scripts 4n6time-static aeskeyfind afflib-tools afterglow aircrack-ng arp-scan autopsy binplist bitpim bitpim-lib bless blt build-essential bulk-extractor cabextract clamav cryptsetup dc3dd dconf-tools dff dumbpig e2fslibs-dev ent epic5 etherape exif extundelete f-spot fdupes flare flasm flex foremost fuse-utils g++ gcc gdb ghex gthumb hal hal-info hexedit honeyd htop hydra hydra-gtk ipython kdiff3 kpartx libafflib0 libafflib-dev libbde libbde-tools libesedb libesedb-tools libevt libevt-tools libevtx libevtx-tools libewf libewf-dev libewf-python libewf-tools libfuse-dev libfvde libfvde-tools liblightgrep libmsiecf libnet1 libolecf libparse-win32registry-perl libregf libregf-dev libregf-python libregf-tools libssl-dev libtext-csv-perl libvshadow libvshadow-dev libvshadow-python libvshadow-tools libxml2-dev maltegoce md5deep myunity nbd-client netcat netpbm nfdump ngrep ntopng okular openjdk-6-jdk p7zip-full phonon pv pyew python python-dev python-pip python-analyzemft python-flowgrep python-nids python-ntdsxtract python-pefile python-plaso python-qt4 python-tk pytsk3 rsakeyfind safecopy sleuthkit ssdeep ssldump stunnel4 tcl tcpflow tcpstat tcptrace tofrodos torsocks transmission unrar upx-ucl vbindiff virtuoso-minimal winbind wine wireshark xmount zenity regripper jd-gui cmospwd ophcrack ophcrack-cli bkhive samdump2 cryptcat outguess bcrypt ccrypt readpst ettercap-graphical driftnet tcpreplay tcpxtract tcptrack p0f netwox lft netsed socat knocker nikto nbtscan radare-gtk python-yara gzrt testdisk scalpel qemu qemu-utils gddrescue dcfldd vmfs-tools guymager mantaray python-fuse samba open-iscsi curl git system-config-samba libpff libpff-dev libpff-tools libpff-python xfsprogs gawk fuse-exfat exfat-utils google-chrome-stable xpdf feh pyew radare radare2 bokken pev tcpick pdftk sslsniff dsniff"
+install_ubuntu_12.04_packages() {
+    packages="sift-base
+sift-scripts
+4n6time-static
+aeskeyfind
+afflib-tools
+afterglow
+aircrack-ng
+arp-scan
+autopsy
+binplist
+bitpim
+bitpim-lib
+bless
+blt
+build-essential
+bulk-extractor
+cabextract
+clamav
+cryptsetup
+dc3dd
+dconf-tools
+dff
+dumbpig
+e2fslibs-dev
+ent
+epic5
+etherape
+exif
+extundelete
+f-spot
+fdupes
+flare
+flasm
+flex
+foremost
+fuse-utils
+g++
+gcc
+gdb
+ghex
+gthumb
+hal
+hal-info
+hexedit
+honeyd
+htop
+hydra
+hydra-gtk
+ipython
+kdiff3
+kpartx
+libafflib0
+libafflib-dev
+libbde
+libbde-tools
+libesedb
+libesedb-tools
+libevt
+libevt-tools
+libevtx
+libevtx-tools
+libewf
+libewf-dev
+libewf-python
+libewf-tools
+libfuse-dev
+libfvde
+libfvde-tools
+liblightgrep
+libmsiecf
+libnet1
+libolecf
+libparse-win32registry-perl
+libregf
+libregf-dev
+libregf-python
+libregf-tools
+libssl-dev
+libtext-csv-perl
+libvshadow
+libvshadow-dev
+libvshadow-python
+libvshadow-tools
+libxml2-dev
+maltegoce
+md5deep
+myunity
+nbd-client
+netcat
+netpbm
+nfdump
+ngrep
+ntopng
+okular
+openjdk-6-jdk
+p7zip-full
+phonon
+pv
+pyew
+python
+python-dev
+python-pip
+python-analyzemft
+python-flowgrep
+python-nids
+python-ntdsxtract
+python-pefile
+python-plaso
+python-qt4
+python-tk
+pytsk3
+rsakeyfind
+safecopy
+sleuthkit
+ssdeep
+ssldump
+stunnel4
+tcl
+tcpflow
+tcpstat
+tcptrace
+tofrodos
+torsocks
+transmission
+unrar
+upx-ucl
+vbindiff
+virtuoso-minimal
+winbind
+wine
+wireshark
+xmount
+zenity
+regripper
+jd-gui
+cmospwd
+ophcrack
+ophcrack-cli
+bkhive
+samdump2
+cryptcat
+outguess
+bcrypt
+ccrypt
+readpst
+ettercap-graphical
+driftnet
+tcpreplay
+tcpxtract
+tcptrack
+p0f
+netwox
+lft
+netsed
+socat
+knocker
+nikto
+nbtscan
+radare-gtk
+python-yara
+gzrt
+testdisk
+scalpel
+qemu
+qemu-utils
+gddrescue
+dcfldd
+vmfs-tools
+guymager
+mantaray
+python-fuse
+samba
+open-iscsi
+curl
+git
+system-config-samba
+libpff
+libpff-dev
+libpff-tools
+libpff-python
+xfsprogs
+gawk
+fuse-exfat
+exfat-utils
+google-chrome-stable
+xpdf
+feh
+pyew
+radare
+radare2
+bokken
+pev
+tcpick
+pdftk
+sslsniff
+dsniff"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -173,25 +371,231 @@ install_ubuntu() {
         packages="$packages"
     fi
 
-    ERROR=0
     for PACKAGE in $packages; do
-        CURRENT_ERROR=0
-        echoinfo "Installing Package: $PACKAGE"
-        __apt_get_install_noinput $package >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
-        if [ $CURRENT_ERROR -eq 1 ]; then
-            echoerror "Package Install Failure: $PACKAGE"
+        __apt_get_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1
+        ERROR=$?
+        if [ $ERROR -ne 0 ]; then
+            echoerror "Install Failure: $PACKAGE (Error Code: $ERROR)"
+        else
+            echoinfo "Installed Package: $PACKAGE"
         fi
     done
-
-    if [ $ERROR -ne 0 ]; then
-        echoerror
-        return 1
-    fi
 
     return 0
 }
 
-install_pip_packages() {
+install_ubuntu_14.04_packages() {
+    packages="sift-base
+sift-scripts
+4n6time-static
+aeskeyfind
+afflib-tools
+afterglow
+aircrack-ng
+arp-scan
+autopsy
+binplist
+bitpim
+bitpim-lib
+bless
+blt
+build-essential
+bulk-extractor
+cabextract
+clamav
+cryptsetup
+dc3dd
+dconf-tools
+dff
+dumbpig
+e2fslibs-dev
+ent
+epic5
+etherape
+exif
+extundelete
+f-spot
+fdupes
+flare
+flasm
+flex
+foremost
+g++
+gcc
+gdb
+ghex
+gthumb
+hal
+hal-info
+hexedit
+htop
+hydra
+hydra-gtk
+ipython
+kdiff3
+kpartx
+libafflib0
+libafflib-dev
+libbde
+libbde-tools
+libesedb
+libesedb-tools
+libevt
+libevt-tools
+libevtx
+libevtx-tools
+libewf
+libewf-dev
+libewf-python
+libewf-tools
+libfuse-dev
+libfvde
+libfvde-tools
+liblightgrep
+libmsiecf
+libnet1
+libolecf
+libparse-win32registry-perl
+libregf
+libregf-dev
+libregf-python
+libregf-tools
+libssl-dev
+libtext-csv-perl
+libvshadow
+libvshadow-dev
+libvshadow-python
+libvshadow-tools
+libxml2-dev
+maltegoce
+md5deep
+nbd-client
+netcat
+netpbm
+nfdump
+ngrep
+ntopng
+okular
+openjdk-6-jdk
+p7zip-full
+phonon
+pv
+pyew
+python
+python-dev
+python-pip
+python-analyzemft
+python-flowgrep
+python-nids
+python-ntdsxtract
+python-pefile
+python-plaso
+python-qt4
+python-tk
+pytsk3
+rsakeyfind
+safecopy
+sleuthkit
+ssdeep
+ssldump
+stunnel4
+tcl
+tcpflow
+tcpstat
+tcptrace
+tofrodos
+torsocks
+transmission
+unrar
+upx-ucl
+vbindiff
+virtuoso-minimal
+winbind
+wine
+wireshark
+xmount
+zenity
+regripper
+cmospwd
+ophcrack
+ophcrack-cli
+bkhive
+samdump2
+cryptcat
+outguess
+bcrypt
+ccrypt
+readpst
+ettercap-graphical
+driftnet
+tcpreplay
+tcpxtract
+tcptrack
+p0f
+netwox
+lft
+netsed
+socat
+knocker
+nikto
+nbtscan
+radare-gtk
+python-yara
+gzrt
+testdisk
+scalpel
+qemu
+qemu-utils
+gddrescue
+dcfldd
+vmfs-tools
+guymager
+mantaray
+python-fuse
+samba
+open-iscsi
+curl
+git
+system-config-samba
+libpff
+libpff-dev
+libpff-tools
+libpff-python
+xfsprogs
+gawk
+exfat-fuse
+exfat-utils
+xpdf
+feh
+pyew
+radare
+radare2
+pev
+tcpick
+pdftk
+sslsniff
+dsniff"
+
+    if [ "$@" = "dev" ]; then
+        packages="$packages"
+    elif [ "$@" = "stable" ]; then
+        packages="$packages"
+    fi
+
+    for PACKAGE in $packages; do
+        __apt_get_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1
+        ERROR=$?
+        if [ $ERROR -ne 0 ]; then
+            echoerror "Install Failure: $PACKAGE (Error Code: $ERROR)"
+        else
+            echoinfo "Installed Package: $PACKAGE"
+        fi
+    done
+
+    return 0
+}
+
+install_ubuntu_12.04_pip_packages() {
     pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile"
 
     if [ "$@" = "dev" ]; then
@@ -217,13 +621,18 @@ install_pip_packages() {
 
     return 0
 }
+install_ubuntu_14.04_pip_packages() {
+    install_ubuntu_12.04_pip_packages $@
+}
 
+# Global: Works on 12.04 and 14.04
 install_perl_modules() {
 	# Required by macl.pl script
 	perl -MCPAN -e "install Net::Wigle" > /dev/null
 }
 
 configure_ubuntu() {
+    echoinfo "SIFT VM: Creating Cases Folder"
 	if [ ! -d /cases ]; then
 		mkdir -p /cases
 		chown $SUDO_USER:$SUDO_USER /cases
@@ -231,6 +640,7 @@ configure_ubuntu() {
 		chmod g+s /cases
 	fi
 
+    echoinfo "SIFT VM: Creating Mount Folders"
 	for dir in usb vss shadow windows_mount e01 aff ewf bde iscsi
 	do
 		if [ ! -d /mnt/$dir ]; then
@@ -257,7 +667,8 @@ configure_ubuntu() {
 			mkdir -p /mnt/shadow_mount/vss$NUM
 		fi
 	done
-	
+
+    echoinfo "SIFT VM: Setting up symlinks to useful scripts"
 	if [ ! -L /usr/bin/vol.py ]; then
 		ln -s /usr/bin/vol /usr/bin/vol.py
 	fi
@@ -272,46 +683,17 @@ configure_ubuntu() {
 	fi
 }
 
-configure_ubuntu_skin() {
-	if [ ! -d /home/$SUDO_USER/.config/autostart ]; then
-		sudo -u $SUDO_USER mkdir -p /home/$SUDO_USER/.config/autostart
-	fi
-
-	sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
-	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
-
-	if [ ! -L /home/$SUDO_USER/Desktop/cases ]; then
-		sudo -u $SUDO_USER ln -s /cases /home/$SUDO_USER/Desktop/cases
-	fi
-  
-	if [ ! -L /home/$SUDO_USER/Desktop/mount_points ]; then
-		sudo -u $SUDO_USER ln -s /mnt /home/$SUDO_USER/Desktop/mount_points
-	fi
-
-	# Clean up broken symlinks
-	find -L /home/$SUDO_USER/Desktop -type l -delete
-
-	for file in /usr/share/sift/resources/*.pdf
-	do
-		base=`basename $file`
-		if [ ! -L /home/$SUDO_USER/Desktop/$base ]; then
-			sudo -u $SUDO_USER ln -s $file /home/$SUDO_USER/Desktop/$base
-		fi
-	done
-	
-	if [ ! -L /home/$SUDO_USER/.config/autostart ]; then
-		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop /home/$SUDO_USER/.config/autostart
-	fi
-    
-	if [ ! -e /usr/share/unity-greeter/logo.png.ubuntu ]; then
-		sudo cp /usr/share/unity-greeter/logo.png /usr/share/unity-greeter/logo.png.ubuntu
-		sudo cp /usr/share/sift/images/login_logo.png /usr/share/unity-greeter/logo.png
-	fi
-
-	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
+# Global: Ubuntu SIFT VM Configuration Function
+# Works with 12.04 and 14.04 Versions
+configure_ubuntu_sift_vm() {
+  echoinfo "SIFT VM: Setting Hostname: siftworkstation"
+	OLD_HOSTNAME=$(hostname)
+	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
+	echo "siftworkstation" > /etc/hostname
+	hostname siftworkstation
 
 	# Checkout code from sift-files and put these files into place
-    echoinfo "Installing SIFT Files"
+  echoinfo "SIFT VM: Installing SIFT Files"
 	CDIR=$(pwd)
 	git clone https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
 	cd /tmp/sift-files
@@ -319,31 +701,34 @@ configure_ubuntu_skin() {
 	cd $CDIR
 	rm -r -f /tmp/sift-files
 
+    echoinfo "SIFT VM: Fixing Samba User"
 	# Make sure we replace the SIFT_USER template with our actual
 	# user so there is write permissions to samba.
 	sed -i "s/SIFT_USER/$SUDO_USER/g" /etc/samba/smb.conf
 
+    echoinfo "SIFT VM: Restarting Samba"
 	# Restart samba services 
 	service smbd restart >> $HOME/sift-install.log 2>&1
 	service nmbd restart >> $HOME/sift-install.log 2>&1
 
+    echoinfo "SIFT VM: Disabling Tor"
 	# Disable services
 	update-rc.d tor disable >> $HOME/sift-install.log 2>&1
 
+    
+    echoinfo "SIFT VM: Fixing Regripper Files"
 	# Make sure to remove all ^M from regripper plugins
 	# Not sure why they are there in the first place ...
 	dos2unix -ascii /usr/share/regripper/* >> $HOME/sift-install.log 2>&1
 
-	OLD_HOSTNAME=$(hostname)
-	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
-	echo "siftworkstation" > /etc/hostname
-	hostname siftworkstation
-
+    
+    echoinfo "SIFT VM: Setting noclobber for $SUDO_USER"
 	if ! grep -i "set -o noclobber" $HOME/.bashrc > /dev/null 2>&1
 	then
 		echo "set -o noclobber" >> $HOME/.bashrc
 	fi
 
+    echoinfo "SIFT VM: Configuring Aliases for $SUDO_USER and root"
 	if ! grep -i "alias mountwin" $HOME/.bash_aliases > /dev/null 2>&1
 	then
 		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> $HOME/.bash_aliases
@@ -354,8 +739,67 @@ configure_ubuntu_skin() {
 	then
 		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> /root/.bash_aliases
 	fi
+
+    echoinfo "SIFT VM: Setting up useful links on $SUDO_USER Desktop"
+	if [ ! -L /home/$SUDO_USER/Desktop/cases ]; then
+		sudo -u $SUDO_USER ln -s /cases /home/$SUDO_USER/Desktop/cases
+	fi
+  
+	if [ ! -L /home/$SUDO_USER/Desktop/mount_points ]; then
+		sudo -u $SUDO_USER ln -s /mnt /home/$SUDO_USER/Desktop/mount_points
+	fi
+
+    echoinfo "SIFT VM: Cleaning up broken symlinks on $SUDO_USER Desktop"
+	# Clean up broken symlinks
+	find -L /home/$SUDO_USER/Desktop -type l -delete
+
+    echoinfo "SIFT VM: Adding all SIFT Resources to $SUDO_USER Desktop"
+	for file in /usr/share/sift/resources/*.pdf
+	do
+		base=`basename $file`
+		if [ ! -L /home/$SUDO_USER/Desktop/$base ]; then
+			sudo -u $SUDO_USER ln -s $file /home/$SUDO_USER/Desktop/$base
+		fi
+	done
 }
 
+# 12.04 SIFT VM Configuration Function
+configure_ubuntu_12.04_sift_vm() {
+	if [ ! -d /home/$SUDO_USER/.config/autostart ]; then
+		sudo -u $SUDO_USER mkdir -p /home/$SUDO_USER/.config/autostart
+	fi
+
+    # Works in 14.04
+	sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
+
+    # Does not WORK in 14.04
+	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+
+    # Works in 14.04 too.
+	if [ ! -L /home/$SUDO_USER/.config/autostart ]; then
+		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop /home/$SUDO_USER/.config/autostart
+	fi
+    
+    # Works in 14.04 too
+	if [ ! -e /usr/share/unity-greeter/logo.png.ubuntu ]; then
+		sudo cp /usr/share/unity-greeter/logo.png /usr/share/unity-greeter/logo.png.ubuntu
+		sudo cp /usr/share/sift/images/login_logo.png /usr/share/unity-greeter/logo.png
+	fi
+
+    # Works in 14.04 too
+	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
+}
+
+# 14.04 SIFT VM Configuration Function
+configure_ubuntu_14.04_sift_vm() {
+  configure_ubuntu_12.04_sift_vm $@
+
+  # Fix for 14.04
+  sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+
+  # Setup the login background image
+  cp /usr/share/sift/images/forensics_blue.jpg /usr/share/backgrounds/warty-final-ubuntu.png
+}
 
 complete_message() {
     echo
@@ -378,6 +822,7 @@ complete_message_skin() {
     echo
 }
 
+UPGRADE_ONLY=0
 CONFIGURE_ONLY=0
 SKIN=0
 INSTALL=1
@@ -386,7 +831,6 @@ YESTOALL=0
 OS=$(lsb_release -si)
 ARCH=$(uname -m | sed 's/x86_//;s/i[3-6]86/32/')
 VER=$(lsb_release -sr)
-
 
 if [ $OS != "Ubuntu" ]; then
     echo "SIFT is only installable on Ubuntu operating systems at this time."
@@ -398,13 +842,15 @@ if [ $ARCH != "64" ]; then
     exit 2
 fi
 
-if [ $VER != "12.04" ]; then
+if [ $VER != "12.04" ] && [ $VER != "14.04" ]; then
     echo "SIFT is only installable on Ubuntu 12.04 at this time."
     exit 3
 fi
 
 if [ `whoami` != "root" ]; then
-    echo "SIFT Bootstrap must be run as root!"
+    echoerror "The SIFT Bootstrap script must run as root."
+    echoinfo "Preferred Usage: sudo bootstrap.sh (options)"
+    echo ""
     exit 3
 fi
 
@@ -414,7 +860,7 @@ if [ "$SUDO_USER" = "" ]; then
 fi
 
 
-while getopts ":hvcsiy" opt
+while getopts ":hvcsiyu" opt
 do
 case "${opt}" in
     h ) usage; exit 0 ;;  
@@ -422,6 +868,7 @@ case "${opt}" in
     s ) SKIN=1 ;;
     i ) INSTALL=1 ;;
     c ) CONFIGURE_ONLY=1; INSTALL=0; SKIN=0; ;;
+    u ) UPGRADE_ONLY=1; ;;
     y ) YESTOALL=1 ;;
     \?) echo
         echoerror "Option does not exist: $OPTARG"
@@ -441,12 +888,29 @@ else
     shift
 fi
 
+if [ "$UPGRADE_ONLY" -eq 1 ]; then
+  echoinfo "SIFT Update"
+  echoinfo "All other options will be ignored!"
+  echoinfo "This could take a few minutes ..."
+  echo ""
+  
+  export DEBIAN_FRONTEND=noninteractive
+
+  install_ubuntu_${VER}_deps $ITYPE || echoerror "Updating Depedencies Failed"
+  install_ubuntu_${VER}_packages $ITYPE || echoerror "Updating Packages Failed"
+  install_ubuntu_${VER}_pip_packages $ITYPE || echoerror "Updating Python Packages Failed"
+  install_perl_modules || echoerror "Updating Perl Packages Failed"
+
+  echo ""
+  echoinfo "SIFT Upgrade Complete"
+  exit 0
+fi
+
 # Check installation type
 if [ "$(echo $ITYPE | egrep '(dev|stable)')x" = "x" ]; then
     echoerror "Installation type \"$ITYPE\" is not known..."
     exit 1
 fi
-
 
 echo "Welcome to the SIFT Bootstrap"
 echo "This script will now proceed to configure your system."
@@ -469,17 +933,21 @@ if [ "$SKIN" -eq 1 ] && [ "$YESTOALL" -eq 0 ]; then
 fi
 
 if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
-    install_ubuntu_deps $ITYPE
-    install_ubuntu $ITYPE
-    install_pip_packages $ITYPE
+    export DEBIAN_FRONTEND=noninteractive
+    install_ubuntu_${VER}_deps $ITYPE
+    install_ubuntu_${VER}_packages $ITYPE
+    install_ubuntu_${VER}_pip_packages $ITYPE
     configure_cpan
     install_perl_modules
 fi
 
+# Configure for SIFT
 configure_ubuntu
 
+# Configure SIFT VM (if selected)
 if [ "$SKIN" -eq 1 ]; then
-    configure_ubuntu_skin
+    configure_ubuntu_sift_vm
+    configure_ubuntu_${VER}_sift_vm
 fi
 
 complete_message
