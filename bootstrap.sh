@@ -209,6 +209,7 @@ gcc
 gdb
 ghex
 gthumb
+graphviz
 hal
 hal-info
 hexedit
@@ -282,6 +283,7 @@ pytsk3
 rsakeyfind
 safecopy
 sleuthkit
+ssh
 ssdeep
 ssldump
 stunnel4
