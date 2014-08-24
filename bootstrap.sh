@@ -681,6 +681,11 @@ configure_ubuntu() {
 	if [ ! -L /usr/bin/mount_ewf.py ] && [ ! -e /usr/bin/mount_ewf.py ]; then
 		ln -s /usr/bin/ewfmount /usr/bin/mount_ewf.py
 	fi
+  
+  # Fix for https://github.com/sans-dfir/sift/issues/10
+  if [ ! -L /usr/bin/icat-sleuthkit ]; then
+    ln -s /usr/bin/icat-sleuthkit /usr/bin/icat
+  fi
 }
 
 # Global: Ubuntu SIFT VM Configuration Function
