@@ -686,7 +686,7 @@ configure_ubuntu() {
   
   # Fix for https://github.com/sans-dfir/sift/issues/10
   if [ ! -L /usr/bin/icat-sleuthkit ]; then
-    ln -s /usr/bin/icat-sleuthkit /usr/bin/icat
+    ln -s /usr/bin/icat /usr/bin/icat-sleuthkit 
   fi
 }
 
@@ -919,12 +919,16 @@ if [ "$(echo $ITYPE | egrep '(dev|stable)')x" = "x" ]; then
     exit 1
 fi
 
-echo "Welcome to the SIFT Bootstrap"
-echo "This script will now proceed to configure your system."
+echoinfo "Welcome to the SIFT Bootstrap"
+echoinfo "This script will now proceed to configure your system."
 
 if [ "$YESTOALL" -eq 1 ]; then
-    echo "You supplied the -y option, this script will not exit for any reason"
+    echoinfo "You supplied the -y option, this script will not exit for any reason"
 fi
+
+echoinfo "OS: $OS"
+echoinfo "Arch: $ARCH"
+echoinfo "Version: $VER"
 
 if [ "$SKIN" -eq 1 ] && [ "$YESTOALL" -eq 0 ]; then
     echo
