@@ -688,6 +688,11 @@ configure_ubuntu() {
   if [ ! -L /usr/bin/icat-sleuthkit ]; then
     ln -s /usr/bin/icat /usr/bin/icat-sleuthkit 
   fi
+  
+  # Fix for https://github.com/sans-dfir/sift/issues/23
+  if [ ! -L /usr/local/bin/l2t_process ]; then
+    ln -s /usr/bin/l2t_process_old.pl /usr/local/bin/l2t_process
+  fi
 }
 
 # Global: Ubuntu SIFT VM Configuration Function
