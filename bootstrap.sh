@@ -711,7 +711,7 @@ configure_ubuntu_sift_vm() {
 	# Checkout code from sift-files and put these files into place
   echoinfo "SIFT VM: Installing SIFT Files"
 	CDIR=$(pwd)
-	git clone https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
+	git clone --recursive https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
 	cd /tmp/sift-files
 	bash install.sh >> $HOME/sift-install.log 2>&1
 	cd $CDIR
