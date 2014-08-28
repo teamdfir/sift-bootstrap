@@ -365,7 +365,9 @@ pev
 tcpick
 pdftk
 sslsniff
-dsniff"
+dsniff
+rar
+xdot"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -576,7 +578,9 @@ pev
 tcpick
 pdftk
 sslsniff
-dsniff"
+dsniff
+rar
+xdot"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
