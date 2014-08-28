@@ -717,34 +717,41 @@ configure_ubuntu_sift_vm() {
 	cd $CDIR
 	rm -r -f /tmp/sift-files
 
-    echoinfo "SIFT VM: Fixing Samba User"
+  echoinfo "SIFT VM: Fixing Samba User"
 	# Make sure we replace the SIFT_USER template with our actual
 	# user so there is write permissions to samba.
 	sed -i "s/SIFT_USER/$SUDO_USER/g" /etc/samba/smb.conf
 
-    echoinfo "SIFT VM: Restarting Samba"
+  echoinfo "SIFT VM: Restarting Samba"
 	# Restart samba services 
 	service smbd restart >> $HOME/sift-install.log 2>&1
 	service nmbd restart >> $HOME/sift-install.log 2>&1
 
-    echoinfo "SIFT VM: Disabling Tor"
+  echoinfo "SIFT VM: Disabling Tor"
 	# Disable services
 	update-rc.d tor disable >> $HOME/sift-install.log 2>&1
 
     
-    echoinfo "SIFT VM: Fixing Regripper Files"
+  echoinfo "SIFT VM: Fixing Regripper Files"
 	# Make sure to remove all ^M from regripper plugins
 	# Not sure why they are there in the first place ...
 	dos2unix -ascii /usr/share/regripper/* >> $HOME/sift-install.log 2>&1
 
+  if [ -f /usr/share/regripper/plugins/usrclass-all ]; then
+    mv /usr/share/regripper/plugins/usrclass-all /usr/share/regripper/plugins/usrclass
+  fi
+
+  if [ -f /usr/share/regripper/plugins/ntuser-all ]; then
+    mv /usr/share/regripper/plugins/ntuser-all /usr/share/regripper/plugins/ntuser
+  fi
     
-    echoinfo "SIFT VM: Setting noclobber for $SUDO_USER"
+  echoinfo "SIFT VM: Setting noclobber for $SUDO_USER"
 	if ! grep -i "set -o noclobber" $HOME/.bashrc > /dev/null 2>&1
 	then
 		echo "set -o noclobber" >> $HOME/.bashrc
 	fi
 
-    echoinfo "SIFT VM: Configuring Aliases for $SUDO_USER and root"
+  echoinfo "SIFT VM: Configuring Aliases for $SUDO_USER and root"
 	if ! grep -i "alias mountwin" $HOME/.bash_aliases > /dev/null 2>&1
 	then
 		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> $HOME/.bash_aliases
