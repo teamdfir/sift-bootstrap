@@ -87,6 +87,15 @@ __pip_install_noinput() {
     pip install --upgrade $@; return $?
 }
 
+#---  FUNCTION  ----------------------------------------------------------------
+#          NAME:  __pip_install_noinput
+#   DESCRIPTION:  (DRY)
+#-------------------------------------------------------------------------------
+__pip_pre_install_noinput() {
+    pip install --pre --upgrade $@; return $?
+}
+
+
 
 __enable_universe_repository() {
     if [ "x$(grep -R universe /etc/apt/sources.list /etc/apt/sources.list.d/ | grep -v '#')" != "x" ]; then
@@ -279,6 +288,7 @@ python-pefile
 python-plaso
 python-qt4
 python-tk
+python-volatility
 pytsk3
 rsakeyfind
 safecopy
@@ -496,6 +506,7 @@ python-pefile
 python-plaso
 python-qt4
 python-tk
+python-volatility
 pytsk3
 rsakeyfind
 safecopy
@@ -603,6 +614,7 @@ xdot"
 
 install_ubuntu_12.04_pip_packages() {
     pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile"
+    pip_pre_packages="distorm3"
 
     if [ "$@" = "dev" ]; then
         pip_packages="$pip_packages"
@@ -615,6 +627,15 @@ install_ubuntu_12.04_pip_packages() {
         CURRENT_ERROR=0
         echoinfo "Installing Python Package: $PACKAGE"
         __pip_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
+        if [ $CURRENT_ERROR -eq 1 ]; then
+            echoerror "Python Package Install Failure: $PACKAGE"
+        fi
+    done
+
+    for PACKAGE in $pip_pre_packages; do
+        CURRENT_ERROR=0
+        echoinfo "Installing Python Package: $PACKAGE"
+        __pip_pre_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
         if [ $CURRENT_ERROR -eq 1 ]; then
             echoerror "Python Package Install Failure: $PACKAGE"
         fi
@@ -634,7 +655,18 @@ install_ubuntu_14.04_pip_packages() {
 # Global: Works on 12.04 and 14.04
 install_perl_modules() {
 	# Required by macl.pl script
-	perl -MCPAN -e "install Net::Wigle" > /dev/null
+	perl -MCPAN -e "install Net::Wigle" >> $HOME/sift-install.log 2>&1
+}
+
+install_sift_files() {
+	# Checkout code from sift-files and put these files into place
+  echoinfo "SIFT VM: Installing SIFT Files"
+	CDIR=$(pwd)
+	git clone --recursive https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
+	cd /tmp/sift-files
+	bash install.sh >> $HOME/sift-install.log 2>&1
+	cd $CDIR
+	rm -r -f /tmp/sift-files
 }
 
 configure_ubuntu() {
@@ -675,13 +707,13 @@ configure_ubuntu() {
 	done
 
     echoinfo "SIFT VM: Setting up symlinks to useful scripts"
-	if [ ! -L /usr/bin/vol.py ]; then
+	if [ ! -L /usr/bin/vol.py ] && [ ! -e /usr/bin/vol.py ]; then
 		ln -s /usr/bin/vol /usr/bin/vol.py
 	fi
-	if [ ! -L /usr/bin/log2timeline ]; then
+	if [ ! -L /usr/bin/log2timeline ] && [ ! -e /usr/bin/log2timeline ]; then
 		ln -s /usr/bin/log2timeline_legacy /usr/bin/log2timeline
 	fi
-	if [ ! -L /usr/bin/kedit ]; then
+	if [ ! -L /usr/bin/kedit ] && [ ! -e /usr/bin/kedit ]; then
 		ln -s /usr/bin/gedit /usr/bin/kedit
 	fi
 	if [ ! -L /usr/bin/mount_ewf.py ] && [ ! -e /usr/bin/mount_ewf.py ]; then
@@ -689,12 +721,12 @@ configure_ubuntu() {
 	fi
   
   # Fix for https://github.com/sans-dfir/sift/issues/10
-  if [ ! -L /usr/bin/icat-sleuthkit ]; then
+  if [ ! -L /usr/bin/icat-sleuthkit ] && [ ! -e /usr/bin/icat-sleuthkit ]; then
     ln -s /usr/bin/icat /usr/bin/icat-sleuthkit 
   fi
   
   # Fix for https://github.com/sans-dfir/sift/issues/23
-  if [ ! -L /usr/local/bin/l2t_process ]; then
+  if [ ! -L /usr/local/bin/l2t_process ] && [ ! -e /usr/local/bin/l2t_process ]; then
     ln -s /usr/bin/l2t_process_old.pl /usr/local/bin/l2t_process
   fi
 }
@@ -707,15 +739,6 @@ configure_ubuntu_sift_vm() {
 	sed -i "s/$OLD_HOSTNAME/siftworkstation/g" /etc/hosts
 	echo "siftworkstation" > /etc/hostname
 	hostname siftworkstation
-
-	# Checkout code from sift-files and put these files into place
-  echoinfo "SIFT VM: Installing SIFT Files"
-	CDIR=$(pwd)
-	git clone --recursive https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
-	cd /tmp/sift-files
-	bash install.sh >> $HOME/sift-install.log 2>&1
-	cd $CDIR
-	rm -r -f /tmp/sift-files
 
   echoinfo "SIFT VM: Fixing Samba User"
 	# Make sure we replace the SIFT_USER template with our actual
@@ -784,21 +807,22 @@ configure_ubuntu_sift_vm() {
 			sudo -u $SUDO_USER ln -s $file /home/$SUDO_USER/Desktop/$base
 		fi
 	done
+  
 }
 
 # 12.04 SIFT VM Configuration Function
 configure_ubuntu_12.04_sift_vm() {
+  # Does not WORK in 14.04
+	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+
+  # Works in 12.04 and 14.04
+  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
+
 	if [ ! -d /home/$SUDO_USER/.config/autostart ]; then
 		sudo -u $SUDO_USER mkdir -p /home/$SUDO_USER/.config/autostart
 	fi
 
-    # Works in 14.04
-	sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
-
-    # Does not WORK in 14.04
-	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
-
-    # Works in 14.04 too.
+  # Works in 14.04 too.
 	if [ ! -L /home/$SUDO_USER/.config/autostart ]; then
 		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop /home/$SUDO_USER/.config/autostart
 	fi
@@ -809,15 +833,35 @@ configure_ubuntu_12.04_sift_vm() {
 		sudo cp /usr/share/sift/images/login_logo.png /usr/share/unity-greeter/logo.png
 	fi
 
-    # Works in 14.04 too
+  # Works in 12.04 only
 	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
 }
 
 # 14.04 SIFT VM Configuration Function
 configure_ubuntu_14.04_sift_vm() {
-  configure_ubuntu_12.04_sift_vm $@
+  # Does not WORK in 14.04
+	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
 
-  # Fix for 14.04
+  # Works in 12.04 and 14.04
+  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
+
+  # Works in 14.04 
+	if [ ! -d /home/$SUDO_USER/.config/autostart ]; then
+		sudo -u $SUDO_USER mkdir -p /home/$SUDO_USER/.config/autostart
+	fi
+
+  # Works in 14.04 too.
+	if [ ! -L /home/$SUDO_USER/.config/autostart ]; then
+		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop /home/$SUDO_USER/.config/autostart
+	fi
+    
+  # Works in 14.04 too
+	if [ ! -e /usr/share/unity-greeter/logo.png.ubuntu ]; then
+		sudo cp /usr/share/unity-greeter/logo.png /usr/share/unity-greeter/logo.png.ubuntu
+		sudo cp /usr/share/sift/images/login_logo.png /usr/share/unity-greeter/logo.png
+	fi
+
+  # Setup user favorites (only for 12.04)
   sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
 
   # Setup the login background image
@@ -923,6 +967,7 @@ if [ "$UPGRADE_ONLY" -eq 1 ]; then
   install_ubuntu_${VER}_packages $ITYPE || echoerror "Updating Packages Failed"
   install_ubuntu_${VER}_pip_packages $ITYPE || echoerror "Updating Python Packages Failed"
   install_perl_modules || echoerror "Updating Perl Packages Failed"
+  install_sift_files || echoerror "Installing/Updating SIFT Files Failed"
 
   echo ""
   echoinfo "SIFT Upgrade Complete"
@@ -966,6 +1011,7 @@ if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
     install_ubuntu_${VER}_pip_packages $ITYPE
     configure_cpan
     install_perl_modules
+    install_sift_files
 fi
 
 # Configure for SIFT
