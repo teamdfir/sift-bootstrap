@@ -625,7 +625,7 @@ install_ubuntu_12.04_pip_packages() {
     ERROR=0
     for PACKAGE in $pip_packages; do
         CURRENT_ERROR=0
-        echoinfo "Installing Python Package: $PACKAGE"
+        echoinfo "Installed Python Package: $PACKAGE"
         __pip_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
         if [ $CURRENT_ERROR -eq 1 ]; then
             echoerror "Python Package Install Failure: $PACKAGE"
@@ -634,7 +634,7 @@ install_ubuntu_12.04_pip_packages() {
 
     for PACKAGE in $pip_pre_packages; do
         CURRENT_ERROR=0
-        echoinfo "Installing Python Package: $PACKAGE"
+        echoinfo "Installed Python (pre) Package: $PACKAGE"
         __pip_pre_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
         if [ $CURRENT_ERROR -eq 1 ]; then
             echoerror "Python Package Install Failure: $PACKAGE"
@@ -772,6 +772,10 @@ configure_ubuntu_sift_vm() {
 	if ! grep -i "set -o noclobber" $HOME/.bashrc > /dev/null 2>&1
 	then
 		echo "set -o noclobber" >> $HOME/.bashrc
+	fi
+	if ! grep -i "set -o noclobber" /root/.bashrc > /dev/null 2>&1
+	then
+		echo "set -o noclobber" >> /root/.bashrc
 	fi
 
   echoinfo "SIFT VM: Configuring Aliases for $SUDO_USER and root"
