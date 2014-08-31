@@ -439,6 +439,7 @@ gcc
 gdb
 ghex
 gthumb
+graphviz
 hal
 hal-info
 hexedit
