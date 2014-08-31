@@ -364,7 +364,6 @@ xfsprogs
 gawk
 fuse-exfat
 exfat-utils
-google-chrome-stable
 xpdf
 feh
 pyew
