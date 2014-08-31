@@ -844,7 +844,7 @@ configure_ubuntu_12.04_sift_vm() {
 # 14.04 SIFT VM Configuration Function
 configure_ubuntu_14.04_sift_vm() {
   # Does not WORK in 14.04
-	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+	sudo -u $SUDO_USER dconf write /com/canonical/unity/launcher/favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://dff.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']"
 
   # Works in 12.04 and 14.04
   sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
