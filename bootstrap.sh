@@ -812,6 +812,12 @@ configure_ubuntu_sift_vm() {
 		fi
 	done
   
+  echoinfo "SIFT VM: Setting up update script"
+  if [ ! -L /home/$SUDO_USER/Desktop/update ]; then
+    ln -s /usr/share/sift/scripts/update /home/$SUDO_USER/Desktop/update
+    chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/Desktop/update
+    chmod 755 /home/$SUDO_USER/Desktop/update
+  fi
 }
 
 # 12.04 SIFT VM Configuration Function
