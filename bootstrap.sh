@@ -612,7 +612,7 @@ xdot"
 
 install_ubuntu_12.04_pip_packages() {
     pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile"
-    pip_pre_packages="distorm3"
+    pip_pre_packages="distorm3 bitstring"
 
     if [ "$@" = "dev" ]; then
         pip_packages="$pip_packages"
@@ -646,6 +646,7 @@ install_ubuntu_12.04_pip_packages() {
 
     return 0
 }
+
 install_ubuntu_14.04_pip_packages() {
     install_ubuntu_12.04_pip_packages $@
 }
