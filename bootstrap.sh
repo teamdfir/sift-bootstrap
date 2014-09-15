@@ -177,8 +177,7 @@ install_ubuntu_14.04_deps() {
 }
 
 install_ubuntu_12.04_packages() {
-    packages="sift-base
-sift-scripts
+    packages="sift-scripts
 4n6time-static
 aeskeyfind
 afflib-tools
@@ -398,8 +397,7 @@ xdot"
 }
 
 install_ubuntu_14.04_packages() {
-    packages="sift-base
-sift-scripts
+    packages="sift-scripts
 4n6time-static
 aeskeyfind
 afflib-tools
