@@ -177,8 +177,7 @@ install_ubuntu_14.04_deps() {
 }
 
 install_ubuntu_12.04_packages() {
-    packages="sift-scripts
-4n6time-static
+    packages="4n6time-static
 aeskeyfind
 afflib-tools
 afterglow
@@ -397,8 +396,7 @@ xdot"
 }
 
 install_ubuntu_14.04_packages() {
-    packages="sift-scripts
-4n6time-static
+    packages="4n6time-static
 aeskeyfind
 afflib-tools
 afterglow
@@ -848,8 +846,7 @@ configure_ubuntu_12.04_sift_vm() {
 
 # 14.04 SIFT VM Configuration Function
 configure_ubuntu_14.04_sift_vm() {
-  # Does not WORK in 14.04
-	sudo -u $SUDO_USER dconf write /com/canonical/unity/launcher/favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://dff.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']"
+  sudo -u $SUDO_USER gsettings set com.canonical.Unity.Launcher favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://dff.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']"
 
   # Works in 12.04 and 14.04
   sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
