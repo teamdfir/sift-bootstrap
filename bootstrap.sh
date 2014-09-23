@@ -656,8 +656,8 @@ install_perl_modules() {
 }
 
 install_sift_files() {
-	# Checkout code from sift-files and put these files into place
-  echoinfo "SIFT VM: Installing SIFT Files"
+    # Checkout code from sift-files and put these files into place
+    echoinfo "SIFT VM: Installing SIFT Files"
 	CDIR=$(pwd)
 	git clone --recursive https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
 	cd /tmp/sift-files
@@ -808,13 +808,6 @@ configure_ubuntu_sift_vm() {
 			sudo -u $SUDO_USER ln -s $file /home/$SUDO_USER/Desktop/$base
 		fi
 	done
-  
-  echoinfo "SIFT VM: Setting up update script"
-  if [ ! -L /home/$SUDO_USER/Desktop/update ]; then
-    ln -s /usr/share/sift/scripts/update /home/$SUDO_USER/Desktop/update
-    chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/Desktop/update
-    chmod 755 /home/$SUDO_USER/Desktop/update
-  fi
 }
 
 # 12.04 SIFT VM Configuration Function
@@ -878,13 +871,10 @@ complete_message() {
     echo
     echo "Installation Complete!"
     echo 
-    echo "The documentation included with the SIFT package is for the 2.14 version"
-    echo "it is included as a reference, but please realize there may be things that"
-    echo "do not apply"
+    echo "The documentation is always a work in progress, feel free to contribute!"
+    echo "Fork the sift-docs project and start sending your pull requests today."
     echo 
-    echo "New documentation is in the works."
-    echo
-    echo "http://sift.readthedocs.org"
+    echo "Documentation: http://sift.readthedocs.org"
     echo
 }
 
