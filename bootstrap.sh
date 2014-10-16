@@ -656,8 +656,8 @@ install_perl_modules() {
 }
 
 install_sift_files() {
-    # Checkout code from sift-files and put these files into place
-    echoinfo "SIFT VM: Installing SIFT Files"
+  # Checkout code from sift-files and put these files into place
+  echoinfo "SIFT VM: Installing SIFT Files"
 	CDIR=$(pwd)
 	git clone --recursive https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
 	cd /tmp/sift-files
@@ -688,8 +688,8 @@ configure_ubuntu() {
 		if [ ! -d /mnt/windows_mount$NUM ]; then
 			mkdir -p /mnt/windows_mount$NUM
 		fi
-		if [ ! -d /mnt/ewf$NUM ]; then
-			mkdir -p /mnt/ewf$NUM
+		if [ ! -d /mnt/ewf_mount$NUM ]; then
+			mkdir -p /mnt/ewf_mount$NUM
 		fi
 	done
  
@@ -725,6 +725,10 @@ configure_ubuntu() {
   # Fix for https://github.com/sans-dfir/sift/issues/23
   if [ ! -L /usr/local/bin/l2t_process ] && [ ! -e /usr/local/bin/l2t_process ]; then
     ln -s /usr/bin/l2t_process_old.pl /usr/local/bin/l2t_process
+  fi
+
+  if [ ! -L /usr/local/etc/foremost.conf ]; then
+    ln -s /etc/foremost.conf /usr/local/etc/foremost.conf
   fi
 }
 
@@ -787,7 +791,7 @@ configure_ubuntu_sift_vm() {
 		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> /root/.bash_aliases
 	fi
 
-    echoinfo "SIFT VM: Setting up useful links on $SUDO_USER Desktop"
+  echoinfo "SIFT VM: Setting up useful links on $SUDO_USER Desktop"
 	if [ ! -L /home/$SUDO_USER/Desktop/cases ]; then
 		sudo -u $SUDO_USER ln -s /cases /home/$SUDO_USER/Desktop/cases
 	fi
@@ -796,11 +800,11 @@ configure_ubuntu_sift_vm() {
 		sudo -u $SUDO_USER ln -s /mnt /home/$SUDO_USER/Desktop/mount_points
 	fi
 
-    echoinfo "SIFT VM: Cleaning up broken symlinks on $SUDO_USER Desktop"
+  echoinfo "SIFT VM: Cleaning up broken symlinks on $SUDO_USER Desktop"
 	# Clean up broken symlinks
 	find -L /home/$SUDO_USER/Desktop -type l -delete
 
-    echoinfo "SIFT VM: Adding all SIFT Resources to $SUDO_USER Desktop"
+  echoinfo "SIFT VM: Adding all SIFT Resources to $SUDO_USER Desktop"
 	for file in /usr/share/sift/resources/*.pdf
 	do
 		base=`basename $file`
@@ -808,6 +812,12 @@ configure_ubuntu_sift_vm() {
 			sudo -u $SUDO_USER ln -s $file /home/$SUDO_USER/Desktop/$base
 		fi
 	done
+
+  # Add extra device loop backs.
+  if ! grep "do mknod /dev/loop" /etc/rc.local > /dev/null 2>&1
+  then
+    echo 'for i in `seq 8 100`; do mknod /dev/loop$i b 7 $i; done' >> /etc/rc.local
+  fi
 }
 
 # 12.04 SIFT VM Configuration Function
