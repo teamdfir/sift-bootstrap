@@ -916,7 +916,7 @@ if [ $ARCH != "64" ]; then
 fi
 
 if [ $VER != "12.04" ] && [ $VER != "14.04" ]; then
-    echo "SIFT is only installable on Ubuntu 12.04 at this time."
+    echo "SIFT is only installable on Ubuntu 12.04 or 14.04 at this time."
     exit 3
 fi
 
