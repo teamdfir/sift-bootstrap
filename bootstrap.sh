@@ -730,6 +730,11 @@ configure_ubuntu() {
   if [ ! -L /usr/local/etc/foremost.conf ]; then
     ln -s /etc/foremost.conf /usr/local/etc/foremost.conf
   fi
+  
+  # Fix for https://github.com/sans-dfir/sift/issues/41
+  if [ ! -L /usr/local/bin/mactime-sleuthkit ] && [ ! -e /usr/local/bin/mactime-sleuthkit ]; then
+    ln -s /usr/bin/mactime /usr/local/bin/mactime-sleuthkit
+  fi
 }
 
 # Global: Ubuntu SIFT VM Configuration Function
