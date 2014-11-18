@@ -858,6 +858,8 @@ configure_ubuntu_12.04_sift_vm() {
 
   # Works in 12.04 only
 	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
+  
+  chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER
 }
 
 # 14.04 SIFT VM Configuration Function
@@ -888,6 +890,8 @@ configure_ubuntu_14.04_sift_vm() {
 
   # Setup the login background image
   cp /usr/share/sift/images/forensics_blue.jpg /usr/share/backgrounds/warty-final-ubuntu.png
+  
+  chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER
 }
 
 complete_message() {
