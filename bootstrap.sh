@@ -818,6 +818,10 @@ configure_ubuntu_sift_vm() {
 		fi
 	done
 
+  if [ ! -L /usr/bin/isciadm ]; then
+    ln -s /usr/bin/isciadm /sbin/isciadm
+  fi
+
   # Add extra device loop backs.
   if ! grep "do mknod /dev/loop" /etc/rc.local > /dev/null 2>&1
   then
