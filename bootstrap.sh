@@ -819,7 +819,7 @@ configure_ubuntu_sift_vm() {
 	done
 
   if [ ! -L /sbin/iscsiadm ]; then
-    ln -s /usr/bin/isciadm /sbin/iscsiadm
+    ln -s /usr/bin/iscsiadm /sbin/iscsiadm
   fi
   
   if [ ! -L /usr/local/bin/rip.pl ]; then
