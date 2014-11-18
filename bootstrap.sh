@@ -821,6 +821,10 @@ configure_ubuntu_sift_vm() {
   if [ ! -L /usr/bin/isciadm ]; then
     ln -s /usr/bin/isciadm /sbin/isciadm
   fi
+  
+  if [ ! -L /usr/local/bin/rip.pl ]; then
+    ln -s /usr/share/regripper/rip.pl /usr/local/bin/rip.pl
+  fi
 
   # Add extra device loop backs.
   if ! grep "do mknod /dev/loop" /etc/rc.local > /dev/null 2>&1
