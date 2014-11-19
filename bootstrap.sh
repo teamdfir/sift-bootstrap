@@ -619,19 +619,19 @@ install_ubuntu_12.04_pip_packages() {
     fi
 
     ERROR=0
-    for PACKAGE in $pip_packages; do
+    for PACKAGE in $pip_pre_packages; do
         CURRENT_ERROR=0
-        echoinfo "Installed Python Package: $PACKAGE"
-        __pip_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
+        echoinfo "Installed Python (pre) Package: $PACKAGE"
+        __pip_pre_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
         if [ $CURRENT_ERROR -eq 1 ]; then
             echoerror "Python Package Install Failure: $PACKAGE"
         fi
     done
 
-    for PACKAGE in $pip_pre_packages; do
+    for PACKAGE in $pip_packages; do
         CURRENT_ERROR=0
-        echoinfo "Installed Python (pre) Package: $PACKAGE"
-        __pip_pre_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
+        echoinfo "Installed Python Package: $PACKAGE"
+        __pip_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1 || (let ERROR=ERROR+1 && let CURRENT_ERROR=1)
         if [ $CURRENT_ERROR -eq 1 ]; then
             echoerror "Python Package Install Failure: $PACKAGE"
         fi
