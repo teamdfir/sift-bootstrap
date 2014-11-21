@@ -766,6 +766,8 @@ configure_ubuntu_sift_vm() {
 	# Disable services
 	update-rc.d tor disable >> $HOME/sift-install.log 2>&1
 
+  echoinfo "SIFT VM: Setting Timezone to UTC" >> $HOME/sift-install.log 2>&1
+  echo "Etc/UTC" > /etc/timezone >> $HOME/sift-install.log 2>&1
     
   echoinfo "SIFT VM: Fixing Regripper Files"
 	# Make sure to remove all ^M from regripper plugins
