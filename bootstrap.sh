@@ -162,6 +162,10 @@ install_ubuntu_12.04_deps() {
     
     add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
 
+    echoinfo "Adding Ubuntu Tweak Repository: $@"
+    
+    add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
+
     echoinfo "Updating Repository Package List ..."
 
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
@@ -374,7 +378,8 @@ pdftk
 sslsniff
 dsniff
 rar
-xdot"
+xdot
+ubuntu-tweak"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -587,7 +592,8 @@ pdftk
 sslsniff
 dsniff
 rar
-xdot"
+xdot
+ubuntu-tweak"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
