@@ -379,7 +379,8 @@ sslsniff
 dsniff
 rar
 xdot
-ubuntu-tweak"
+ubuntu-tweak
+vim"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -593,7 +594,8 @@ sslsniff
 dsniff
 rar
 xdot
-ubuntu-tweak"
+ubuntu-tweak
+vim"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
