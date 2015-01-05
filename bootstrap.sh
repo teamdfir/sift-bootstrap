@@ -177,7 +177,35 @@ install_ubuntu_12.04_deps() {
     return 0
 }
 install_ubuntu_14.04_deps() {
-    install_ubuntu_12.04_deps $@
+    echoinfo "Updating your APT Repositories ... "
+    
+    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Installing Python Software Properies ... "
+
+    __apt_get_install_noinput software-properties-common >> $HOME/sift-install.log 2>&1  || return 1
+
+    echoinfo "Enabling Universal Repository ... "
+
+    __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Adding SIFT Repository: $@"
+    
+    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Adding Ubuntu Tweak Repository: $@"
+    
+    add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Updating Repository Package List ..."
+
+    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Upgrading all packages to latest version ..."
+
+    __apt_get_upgrade_noinput >> $HOME/sift-install.log 2>&1 || return 1
+
+    return 0
 }
 
 install_ubuntu_12.04_packages() {
