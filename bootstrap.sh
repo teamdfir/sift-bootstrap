@@ -95,6 +95,11 @@ __pip_pre_install_noinput() {
     pip install --pre --upgrade $@; return $?
 }
 
+__check_apt_lock() {
+    lsof /var/lib/dpkg/lock > /dev/null 2>&1
+    RES=`echo $?`
+    return $RES
+}
 
 
 __enable_universe_repository() {
@@ -987,6 +992,10 @@ if [ "$SUDO_USER" = "" ]; then
     exit 4
 fi
 
+if [ ! "$(__check_apt_lock)" ]; then
+    echo "APT Package Manager appears to be locked. Close all package managers."
+    exit 15
+fi
 
 while getopts ":hvcsiyu" opt
 do
