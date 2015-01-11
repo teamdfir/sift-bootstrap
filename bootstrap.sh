@@ -214,8 +214,7 @@ install_ubuntu_14.04_deps() {
 }
 
 install_ubuntu_12.04_packages() {
-    packages="4n6time-static
-aeskeyfind
+    packages="aeskeyfind
 afflib-tools
 afterglow
 aircrack-ng
@@ -433,8 +432,7 @@ vim"
 }
 
 install_ubuntu_14.04_packages() {
-    packages="4n6time-static
-aeskeyfind
+    packages="aeskeyfind
 afflib-tools
 afterglow
 aircrack-ng
