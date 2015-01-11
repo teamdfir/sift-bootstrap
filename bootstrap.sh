@@ -382,7 +382,6 @@ qemu-utils
 gddrescue
 dcfldd
 vmfs-tools
-guymager
 mantaray
 python-fuse
 samba
@@ -597,7 +596,6 @@ qemu-utils
 gddrescue
 dcfldd
 vmfs-tools
-guymager
 mantaray
 python-fuse
 samba
