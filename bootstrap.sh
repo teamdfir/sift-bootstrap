@@ -986,10 +986,10 @@ if [ "$SUDO_USER" = "" ]; then
     exit 4
 fi
 
-if [ ! "$(__check_apt_lock)" ]; then
-    echo "APT Package Manager appears to be locked. Close all package managers."
-    exit 15
-fi
+#if [ ! "$(__check_apt_lock)" ]; then
+#    echo "APT Package Manager appears to be locked. Close all package managers."
+#    exit 15
+#fi
 
 while getopts ":hvcsiyu" opt
 do
