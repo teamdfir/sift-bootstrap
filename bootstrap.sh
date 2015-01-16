@@ -95,6 +95,11 @@ __pip_pre_install_noinput() {
     pip install --pre --upgrade $@; return $?
 }
 
+__check_apt_lock() {
+    lsof /var/lib/dpkg/lock > /dev/null 2>&1
+    RES=`echo $?`
+    return $RES
+}
 
 
 __enable_universe_repository() {
@@ -177,12 +182,39 @@ install_ubuntu_12.04_deps() {
     return 0
 }
 install_ubuntu_14.04_deps() {
-    install_ubuntu_12.04_deps $@
+    echoinfo "Updating your APT Repositories ... "
+    
+    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Installing Python Software Properies ... "
+
+    __apt_get_install_noinput software-properties-common >> $HOME/sift-install.log 2>&1  || return 1
+
+    echoinfo "Enabling Universal Repository ... "
+
+    __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Adding SIFT Repository: $@"
+    
+    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Adding Ubuntu Tweak Repository: $@"
+    
+    add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Updating Repository Package List ..."
+
+    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Upgrading all packages to latest version ..."
+
+    __apt_get_upgrade_noinput >> $HOME/sift-install.log 2>&1 || return 1
+
+    return 0
 }
 
 install_ubuntu_12.04_packages() {
-    packages="4n6time-static
-aeskeyfind
+    packages="aeskeyfind
 afflib-tools
 afterglow
 aircrack-ng
@@ -200,7 +232,6 @@ clamav
 cryptsetup
 dc3dd
 dconf-tools
-dff
 dumbpig
 e2fslibs-dev
 ent
@@ -350,7 +381,6 @@ qemu-utils
 gddrescue
 dcfldd
 vmfs-tools
-guymager
 mantaray
 python-fuse
 samba
@@ -379,7 +409,8 @@ sslsniff
 dsniff
 rar
 xdot
-ubuntu-tweak"
+ubuntu-tweak
+vim"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -401,8 +432,7 @@ ubuntu-tweak"
 }
 
 install_ubuntu_14.04_packages() {
-    packages="4n6time-static
-aeskeyfind
+    packages="aeskeyfind
 afflib-tools
 afterglow
 aircrack-ng
@@ -420,7 +450,6 @@ clamav
 cryptsetup
 dc3dd
 dconf-tools
-dff
 dumbpig
 e2fslibs-dev
 ent
@@ -565,7 +594,6 @@ qemu-utils
 gddrescue
 dcfldd
 vmfs-tools
-guymager
 mantaray
 python-fuse
 samba
@@ -593,7 +621,8 @@ sslsniff
 dsniff
 rar
 xdot
-ubuntu-tweak"
+ubuntu-tweak
+vim"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -844,7 +873,7 @@ configure_ubuntu_sift_vm() {
 # 12.04 SIFT VM Configuration Function
 configure_ubuntu_12.04_sift_vm() {
   # Does not WORK in 14.04
-	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']"
 
   # Works in 12.04 and 14.04
   sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
@@ -872,7 +901,7 @@ configure_ubuntu_12.04_sift_vm() {
 
 # 14.04 SIFT VM Configuration Function
 configure_ubuntu_14.04_sift_vm() {
-  sudo -u $SUDO_USER gsettings set com.canonical.Unity.Launcher favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://dff.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']"
+  sudo -u $SUDO_USER gsettings set com.canonical.Unity.Launcher favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']"
 
   # Works in 12.04 and 14.04
   sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
@@ -894,7 +923,7 @@ configure_ubuntu_14.04_sift_vm() {
 	fi
 
   # Setup user favorites (only for 12.04)
-  sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'dff.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+  sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']"
 
   # Setup the login background image
   cp /usr/share/sift/images/forensics_blue.jpg /usr/share/backgrounds/warty-final-ubuntu.png
@@ -957,6 +986,10 @@ if [ "$SUDO_USER" = "" ]; then
     exit 4
 fi
 
+#if [ ! "$(__check_apt_lock)" ]; then
+#    echo "APT Package Manager appears to be locked. Close all package managers."
+#    exit 15
+#fi
 
 while getopts ":hvcsiyu" opt
 do
