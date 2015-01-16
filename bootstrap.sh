@@ -711,7 +711,7 @@ configure_ubuntu() {
 
     echoinfo "SIFT VM: Setting up symlinks to useful scripts"
 	if [ ! -L /usr/bin/vol.py ] && [ ! -e /usr/bin/vol.py ]; then
-		ln -s /usr/bin/vol /usr/bin/vol.py
+		ln -s /usr/bin/vol.py /usr/bin/vol
 	fi
 	if [ ! -L /usr/bin/log2timeline ] && [ ! -e /usr/bin/log2timeline ]; then
 		ln -s /usr/bin/log2timeline_legacy /usr/bin/log2timeline
