@@ -1,3 +1,5 @@
+If you have bugs or issues to track please use https://github.com/sans-dfir/sift/issues
+
 **You must use bash not sh to run this script**
 
 Overview
