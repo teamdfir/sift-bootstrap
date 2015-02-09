@@ -645,7 +645,7 @@ vim"
 
 install_ubuntu_12.04_pip_packages() {
     pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile"
-    pip_pre_packages="distorm3 bitstring"
+    pip_pre_packages="bitstring"
 
     if [ "$@" = "dev" ]; then
         pip_packages="$pip_packages"
