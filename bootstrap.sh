@@ -252,8 +252,6 @@ gdb
 ghex
 gthumb
 graphviz
-hal
-hal-info
 hexedit
 honeyd
 htop
@@ -469,8 +467,6 @@ gdb
 ghex
 gthumb
 graphviz
-hal
-hal-info
 hexedit
 htop
 hydra
