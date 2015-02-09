@@ -311,7 +311,6 @@ pyew
 python
 python-dev
 python-pip
-python-analyzemft
 python-flowgrep
 python-nids
 python-ntdsxtract
@@ -524,7 +523,6 @@ pyew
 python
 python-dev
 python-pip
-python-analyzemft
 python-flowgrep
 python-nids
 python-ntdsxtract
@@ -640,7 +638,7 @@ vim"
 }
 
 install_ubuntu_12.04_pip_packages() {
-    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile"
+    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT"
     pip_pre_packages="bitstring"
 
     if [ "$@" = "dev" ]; then
