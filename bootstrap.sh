@@ -638,7 +638,7 @@ vim"
 }
 
 install_ubuntu_12.04_pip_packages() {
-    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT python-magic"
+    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT python-magic argparse unicodecsv"
     pip_pre_packages="bitstring"
 
     if [ "$@" = "dev" ]; then
