@@ -825,6 +825,9 @@ configure_ubuntu_sift_vm() {
   if [ -f /usr/share/regripper/plugins/ntuser-all ]; then
     mv /usr/share/regripper/plugins/ntuser-all /usr/share/regripper/plugins/ntuser
   fi
+
+  chmod 775 /usr/share/regripper/rip.pl
+  chmod -R 755 /usr/share/regripper/plugins
     
   echoinfo "SIFT VM: Setting noclobber for $SUDO_USER"
 	if ! grep -i "set -o noclobber" $HOME/.bashrc > /dev/null 2>&1
