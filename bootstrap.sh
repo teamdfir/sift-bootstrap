@@ -152,62 +152,56 @@ usage() {
 
 install_ubuntu_12.04_deps() {
     echoinfo "Updating your APT Repositories ... "
-    
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
     echoinfo "Installing Python Software Properies ... "
-
     __apt_get_install_noinput python-software-properties >> $HOME/sift-install.log 2>&1  || return 1
 
     echoinfo "Enabling Universal Repository ... "
-
     __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Adding SIFT Repository: $@"
-    
-    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
+    echoinfo "Enabling Elastic Repository ... "
+    wget -qO - "https://packages.elasticsearch.org/GPG-KEY-elasticsearch" | apt-key add - >> $HOME/sift-install.log 2>&1 || return 1
+    add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.5/debian stable main" >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Adding Ubuntu Tweak Repository: $@"
-    
+    echoinfo "Adding Ubuntu Tweak Repository"
     add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Updating Repository Package List ..."
+    echoinfo "Adding SIFT Repository: $@"
+    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
 
+    echoinfo "Updating Repository Package List ..."
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
     echoinfo "Upgrading all packages to latest version ..."
-
     __apt_get_upgrade_noinput >> $HOME/sift-install.log 2>&1 || return 1
 
     return 0
 }
 install_ubuntu_14.04_deps() {
     echoinfo "Updating your APT Repositories ... "
-    
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
     echoinfo "Installing Python Software Properies ... "
-
     __apt_get_install_noinput software-properties-common >> $HOME/sift-install.log 2>&1  || return 1
 
     echoinfo "Enabling Universal Repository ... "
-
     __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Adding SIFT Repository: $@"
-    
-    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
+    echoinfo "Enabling Elastic Repository ... "
+    wget -qO - "https://packages.elasticsearch.org/GPG-KEY-elasticsearch" | apt-key add - >> $HOME/sift-install.log 2>&1 || return 1
+    add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.5/debian stable main" >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Adding Ubuntu Tweak Repository: $@"
-    
+    echoinfo "Adding Ubuntu Tweak Repository"
     add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Updating Repository Package List ..."
+    echoinfo "Adding SIFT Repository: $@"
+    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
 
+    echoinfo "Updating Repository Package List ..."
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
     echoinfo "Upgrading all packages to latest version ..."
-
     __apt_get_upgrade_noinput >> $HOME/sift-install.log 2>&1 || return 1
 
     return 0
@@ -220,6 +214,7 @@ afterglow
 aircrack-ng
 arp-scan
 autopsy
+apache2
 binplist
 bitpim
 bitpim-lib
@@ -407,7 +402,8 @@ dsniff
 rar
 xdot
 ubuntu-tweak
-vim"
+vim
+elasticsearch"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -435,6 +431,7 @@ afterglow
 aircrack-ng
 arp-scan
 autopsy
+apache2
 binplist
 bitpim
 bitpim-lib
@@ -616,7 +613,8 @@ dsniff
 rar
 xdot
 ubuntu-tweak
-vim"
+vim
+elasticsearch"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -684,6 +682,27 @@ install_perl_modules() {
 	perl -MCPAN -e "install Net::Wigle" >> $HOME/sift-install.log 2>&1
 }
 
+install_kibana() {
+  CDIR=$(pwd)
+  cd /tmp
+  wget "https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz"  >> $HOME/sift-install.log 2>&1
+  tar -zxf kibana-3.1.0.tar.gz  >> $HOME/sift-install.log 2>&1
+  cd /tmp/kibana-3.1.0/ >> $HOME/sift-install.log 2>&1
+  mkdir -p /var/www/html/kibana
+  cp -r . /var/www/html/kibana >> $HOME/sift-install.log 2>&1
+  cd $CDIR
+}
+
+configure_elasticsearch() {
+	if ! grep -i "http.cors.enabled" /etc/elasticsearch/elasticsearch.yml > /dev/null 2>&1
+	then
+		echo "http.cors.enabled: true" >> /etc/elasticsearch/elasticsearch.yml
+	fi
+
+  update-rc.d elasticsearch defaults 95 10 >> $HOME/sift-install.log 2>&1
+  service elasticsearch start  >> $HOME/sift-install.log 2>&1
+}
+
 install_sift_files() {
   # Checkout code from sift-files and put these files into place
   echoinfo "SIFT VM: Installing SIFT Files"
@@ -696,7 +715,7 @@ install_sift_files() {
 }
 
 configure_ubuntu() {
-    echoinfo "SIFT VM: Creating Cases Folder"
+  echoinfo "SIFT VM: Creating Cases Folder"
 	if [ ! -d /cases ]; then
 		mkdir -p /cases
 		chown $SUDO_USER:$SUDO_USER /cases
@@ -704,7 +723,7 @@ configure_ubuntu() {
 		chmod g+s /cases
 	fi
 
-    echoinfo "SIFT VM: Creating Mount Folders"
+  echoinfo "SIFT VM: Creating Mount Folders"
 	for dir in usb vss shadow windows_mount e01 aff ewf bde iscsi
 	do
 		if [ ! -d /mnt/$dir ]; then
@@ -732,9 +751,9 @@ configure_ubuntu() {
 		fi
 	done
 
-    echoinfo "SIFT VM: Setting up symlinks to useful scripts"
-	if [ ! -L /usr/bin/vol.py ] && [ ! -e /usr/bin/vol.py ]; then
-		ln -s /usr/bin/vol.py /usr/bin/vol
+  echoinfo "SIFT VM: Setting up symlinks to useful scripts"
+  if [ ! -L /usr/bin/vol.py ] && [ ! -e /usr/bin/vol.py ]; then
+    ln -s /usr/bin/vol.py /usr/bin/vol
 	fi
 	if [ ! -L /usr/bin/log2timeline ] && [ ! -e /usr/bin/log2timeline ]; then
 		ln -s /usr/bin/log2timeline_legacy /usr/bin/log2timeline
@@ -745,12 +764,12 @@ configure_ubuntu() {
 	if [ ! -L /usr/bin/mount_ewf.py ] && [ ! -e /usr/bin/mount_ewf.py ]; then
 		ln -s /usr/bin/ewfmount /usr/bin/mount_ewf.py
 	fi
-  
+
   # Fix for https://github.com/sans-dfir/sift/issues/10
   if [ ! -L /usr/bin/icat-sleuthkit ] && [ ! -e /usr/bin/icat-sleuthkit ]; then
     ln -s /usr/bin/icat /usr/bin/icat-sleuthkit 
   fi
-  
+
   # Fix for https://github.com/sans-dfir/sift/issues/23
   if [ ! -L /usr/local/bin/l2t_process ] && [ ! -e /usr/local/bin/l2t_process ]; then
     ln -s /usr/bin/l2t_process_old.pl /usr/local/bin/l2t_process
@@ -759,11 +778,13 @@ configure_ubuntu() {
   if [ ! -L /usr/local/etc/foremost.conf ]; then
     ln -s /etc/foremost.conf /usr/local/etc/foremost.conf
   fi
-  
+
   # Fix for https://github.com/sans-dfir/sift/issues/41
   if [ ! -L /usr/local/bin/mactime-sleuthkit ] && [ ! -e /usr/local/bin/mactime-sleuthkit ]; then
     ln -s /usr/bin/mactime /usr/local/bin/mactime-sleuthkit
   fi
+
+  sed -i "s/APT::Periodic::Update-Package-Lists \"1\"/APT::Periodic::Update-Package-Lists \"0\"/g" /etc/apt/apt.conf.d/10periodic
 }
 
 # Global: Ubuntu SIFT VM Configuration Function
@@ -867,10 +888,10 @@ configure_ubuntu_sift_vm() {
 # 12.04 SIFT VM Configuration Function
 configure_ubuntu_12.04_sift_vm() {
   # Does not WORK in 14.04
-	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']"  >> $HOME/sift-install.log 2>&1
 
   # Works in 12.04 and 14.04
-  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
+  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg  >> $HOME/sift-install.log 2>&1
 
 	if [ ! -d /home/$SUDO_USER/.config/autostart ]; then
 		sudo -u $SUDO_USER mkdir -p /home/$SUDO_USER/.config/autostart
@@ -888,17 +909,17 @@ configure_ubuntu_12.04_sift_vm() {
 	fi
 
   # Works in 12.04 only
-	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg
+	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg >> $HOME/sift-install.log 2>&1
   
   chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER
 }
 
 # 14.04 SIFT VM Configuration Function
 configure_ubuntu_14.04_sift_vm() {
-  sudo -u $SUDO_USER gsettings set com.canonical.Unity.Launcher favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']"
+  sudo -u $SUDO_USER gsettings set com.canonical.Unity.Launcher favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']" >> $HOME/sift-install.log 2>&1
 
   # Works in 12.04 and 14.04
-  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg
+  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg >> $HOME/sift-install.log 2>&1
 
   # Works in 14.04 
 	if [ ! -d /home/$SUDO_USER/.config/autostart ]; then
@@ -917,7 +938,7 @@ configure_ubuntu_14.04_sift_vm() {
 	fi
 
   # Setup user favorites (only for 12.04)
-  sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']"
+  sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']" >> $HOME/sift-install.log 2>&1
 
   # Setup the login background image
   cp /usr/share/sift/images/forensics_blue.jpg /usr/share/backgrounds/warty-final-ubuntu.png
@@ -1025,6 +1046,7 @@ if [ "$UPGRADE_ONLY" -eq 1 ]; then
   install_ubuntu_${VER}_packages $ITYPE || echoerror "Updating Packages Failed"
   install_ubuntu_${VER}_pip_packages $ITYPE || echoerror "Updating Python Packages Failed"
   install_perl_modules || echoerror "Updating Perl Packages Failed"
+  install_kibana || echoerror "Installing/Updating Kibana Failed"
   install_sift_files || echoerror "Installing/Updating SIFT Files Failed"
 
   echo ""
@@ -1069,8 +1091,11 @@ if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
     install_ubuntu_${VER}_pip_packages $ITYPE
     configure_cpan
     install_perl_modules
+    install_kibana
     install_sift_files
 fi
+
+configure_elasticsearch
 
 # Configure for SIFT
 configure_ubuntu
