@@ -542,6 +542,7 @@ tcptrace
 tofrodos
 torsocks
 transmission
+unity-control-center
 unrar
 upx-ucl
 vbindiff
