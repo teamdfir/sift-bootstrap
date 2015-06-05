@@ -327,7 +327,6 @@ tcpflow
 tcpstat
 tcptrace
 tofrodos
-torsocks
 transmission
 unrar
 upx-ucl
@@ -540,7 +539,6 @@ tcpflow
 tcpstat
 tcptrace
 tofrodos
-torsocks
 transmission
 unity-control-center
 unrar
@@ -806,10 +804,6 @@ configure_ubuntu_sift_vm() {
 	# Restart samba services 
 	service smbd restart >> $HOME/sift-install.log 2>&1
 	service nmbd restart >> $HOME/sift-install.log 2>&1
-
-  echoinfo "SIFT VM: Disabling Tor"
-	# Disable services
-	update-rc.d tor disable >> $HOME/sift-install.log 2>&1
 
   echoinfo "SIFT VM: Setting Timezone to UTC" >> $HOME/sift-install.log 2>&1
   echo "Etc/UTC" > /etc/timezone >> $HOME/sift-install.log 2>&1
