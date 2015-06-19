@@ -846,6 +846,11 @@ configure_ubuntu_sift_vm() {
 		echo "alias mountwin='mount -o ro,loop,show_sys_files,streams_interface=windows'" >> /root/.bash_aliases
 	fi
 
+  echoinfo "SIFT VM: Sanity check for Desktop folder"
+        if [ ! -d ~$SUDO_USER/Desktop ]; then
+                sudo -u $SUDO_USER mkdir -p ~$SUDO_USER/Desktop
+        fi
+  
   echoinfo "SIFT VM: Setting up useful links on $SUDO_USER Desktop"
 	if [ ! -L ~$SUDO_USER/Desktop/cases ]; then
 		sudo -u $SUDO_USER ln -s /cases ~$SUDO_USER/Desktop/cases
