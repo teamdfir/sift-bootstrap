@@ -150,6 +150,11 @@ usage() {
     exit 1
 }
 
+remove_bad_old_deps() {
+    echoinfo "Removing old, conflicting, or bad packages ..."
+    apt-get remove -y binplist >> $HOME/sift-install.log 2>&1 || return 1
+}
+
 install_ubuntu_12.04_deps() {
     echoinfo "Updating your APT Repositories ... "
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
@@ -169,6 +174,9 @@ install_ubuntu_12.04_deps() {
 
     echoinfo "Adding SIFT Repository: $@"
     add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
+
+    echoinfo "Adding GIFT Ropository: Stable"
+    add-apt-repository -y ppa:gift/stable >> $HOME/sift-install.log 2>&1 || return 1
 
     echoinfo "Updating Repository Package List ..."
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
@@ -198,6 +206,9 @@ install_ubuntu_14.04_deps() {
     echoinfo "Adding SIFT Repository: $@"
     add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
 
+    echoinfo "Adding GIFT Ropository: Stable"
+    add-apt-repository -y ppa:gift/stable >> $HOME/sift-install.log 2>&1 || return 1
+
     echoinfo "Updating Repository Package List ..."
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
@@ -215,7 +226,6 @@ aircrack-ng
 arp-scan
 autopsy
 apache2
-binplist
 bitpim
 bitpim-lib
 bless
@@ -431,7 +441,6 @@ aircrack-ng
 arp-scan
 autopsy
 apache2
-binplist
 bitpim
 bitpim-lib
 bless
@@ -1045,6 +1054,7 @@ if [ "$UPGRADE_ONLY" -eq 1 ]; then
   
   export DEBIAN_FRONTEND=noninteractive
 
+  remove_bad_old_deps || echoerror "Removing Old Depedencies Failed"
   install_ubuntu_${VER}_deps $ITYPE || echoerror "Updating Depedencies Failed"
   install_ubuntu_${VER}_packages $ITYPE || echoerror "Updating Packages Failed"
   install_ubuntu_${VER}_pip_packages $ITYPE || echoerror "Updating Python Packages Failed"
