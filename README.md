@@ -10,6 +10,8 @@ Welcome to the SANS Investigative Forensic Toolkit Installation Bootstrap Script
 
 **If you are running into errors, please check the troubleshooting section first**
 
+**Parts of this script were borrowed from SaltStack's bootstrap script! Thanks!**
+
 Documentation
 =============
 Check out the latest documentation for SIFT at http://sift.readthedocs.org/en/latest
