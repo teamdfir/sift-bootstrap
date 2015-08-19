@@ -856,29 +856,29 @@ configure_ubuntu_sift_vm() {
 	fi
 
   echoinfo "SIFT VM: Sanity check for Desktop folder"
-        if [ ! -d ~$SUDO_USER/Desktop ]; then
-                sudo -u $SUDO_USER mkdir -p ~$SUDO_USER/Desktop
+        if [ ! -d $HOME/Desktop ]; then
+                sudo -u $SUDO_USER mkdir -p $HOME/Desktop
         fi
   
   echoinfo "SIFT VM: Setting up useful links on $SUDO_USER Desktop"
-	if [ ! -L ~$SUDO_USER/Desktop/cases ]; then
-		sudo -u $SUDO_USER ln -s /cases ~$SUDO_USER/Desktop/cases
+	if [ ! -L $HOME/Desktop/cases ]; then
+		sudo -u $SUDO_USER ln -s /cases $HOME/Desktop/cases
 	fi
   
-	if [ ! -L ~$SUDO_USER/Desktop/mount_points ]; then
-		sudo -u $SUDO_USER ln -s /mnt ~$SUDO_USER/Desktop/mount_points
+	if [ ! -L $HOME/Desktop/mount_points ]; then
+		sudo -u $SUDO_USER ln -s /mnt $HOME/Desktop/mount_points
 	fi
 
   echoinfo "SIFT VM: Cleaning up broken symlinks on $SUDO_USER Desktop"
 	# Clean up broken symlinks
-	find -L ~$SUDO_USER/Desktop -type l -delete
+	find -L $HOME/Desktop -type l -delete
 
   echoinfo "SIFT VM: Adding all SIFT Resources to $SUDO_USER Desktop"
 	for file in /usr/share/sift/resources/*.pdf
 	do
 		base=`basename $file`
-		if [ ! -L ~$SUDO_USER/Desktop/$base ]; then
-			sudo -u $SUDO_USER ln -s $file ~$SUDO_USER/Desktop/$base
+		if [ ! -L $HOME/Desktop/$base ]; then
+			sudo -u $SUDO_USER ln -s $file $HOME/Desktop/$base
 		fi
 	done
 
@@ -905,13 +905,13 @@ configure_ubuntu_12.04_sift_vm() {
   # Works in 12.04 and 14.04
   sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg  >> $HOME/sift-install.log 2>&1
 
-	if [ ! -d ~$SUDO_USER/.config/autostart ]; then
-		sudo -u $SUDO_USER mkdir -p ~$SUDO_USER/.config/autostart
+	if [ ! -d $HOME/.config/autostart ]; then
+		sudo -u $SUDO_USER mkdir -p $HOME/.config/autostart
 	fi
 
   # Works in 14.04 too.
-	if [ ! -L ~$SUDO_USER/.config/autostart ]; then
-		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop ~$SUDO_USER/.config/autostart
+	if [ ! -L $HOME/.config/autostart ]; then
+		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop $HOME/.config/autostart
 	fi
     
     # Works in 14.04 too
@@ -923,7 +923,7 @@ configure_ubuntu_12.04_sift_vm() {
   # Works in 12.04 only
 	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg >> $HOME/sift-install.log 2>&1
   
-  chown -R $SUDO_USER:$SUDO_USER ~$SUDO_USER
+  chown -R $SUDO_USER:$SUDO_USER $HOME
 }
 
 # 14.04 SIFT VM Configuration Function
@@ -934,13 +934,13 @@ configure_ubuntu_14.04_sift_vm() {
   sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg >> $HOME/sift-install.log 2>&1
 
   # Works in 14.04 
-	if [ ! -d ~$SUDO_USER/.config/autostart ]; then
-		sudo -u $SUDO_USER mkdir -p ~$SUDO_USER/.config/autostart
+	if [ ! -d $HOME/.config/autostart ]; then
+		sudo -u $SUDO_USER mkdir -p $HOME/.config/autostart
 	fi
 
   # Works in 14.04 too.
-	if [ ! -L ~$SUDO_USER/.config/autostart ]; then
-		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop ~$SUDO_USER/.config/autostart
+	if [ ! -L $HOME/.config/autostart ]; then
+		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop $HOME/.config/autostart
 	fi
     
   # Works in 14.04 too
@@ -955,7 +955,7 @@ configure_ubuntu_14.04_sift_vm() {
   # Setup the login background image
   cp /usr/share/sift/images/forensics_blue.jpg /usr/share/backgrounds/warty-final-ubuntu.png
   
-  chown -R $SUDO_USER:$SUDO_USER ~$SUDO_USER
+  chown -R $SUDO_USER:$SUDO_USER $HOME
 }
 
 complete_message() {
