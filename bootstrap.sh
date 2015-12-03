@@ -123,6 +123,11 @@ __enable_universe_repository() {
     return 0
 }
 
+__enable_docker_repository() {
+  apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+  add-apt-repository -y "deb https://apt.dockerproject.org/repo ubuntu-$(lsb_release -sc) main"
+}
+
 __check_unparsed_options() {
     shellopts="$1"
     # grep alternative for SunOS
@@ -153,39 +158,9 @@ usage() {
 remove_bad_old_deps() {
     echoinfo "Removing old, conflicting, or bad packages ..."
     apt-get remove -y binplist >> $HOME/sift-install.log 2>&1 || return 1
+    apt-get remove -y unity-webapps-common  >> $HOME/sift-install.log 2>&1 || return 1
 }
 
-install_ubuntu_12.04_deps() {
-    echoinfo "Updating your APT Repositories ... "
-    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Installing Python Software Properies ... "
-    __apt_get_install_noinput python-software-properties >> $HOME/sift-install.log 2>&1  || return 1
-
-    echoinfo "Enabling Universal Repository ... "
-    __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Enabling Elastic Repository ... "
-    wget -qO - "https://packages.elasticsearch.org/GPG-KEY-elasticsearch" | apt-key add - >> $HOME/sift-install.log 2>&1 || return 1
-    add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.5/debian stable main" >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Adding Ubuntu Tweak Repository"
-    add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Adding SIFT Repository: $@"
-    add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Adding GIFT Ropository: Stable"
-    add-apt-repository -y ppa:gift/stable >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Updating Repository Package List ..."
-    apt-get update >> $HOME/sift-install.log 2>&1 || return 1
-
-    echoinfo "Upgrading all packages to latest version ..."
-    __apt_get_upgrade_noinput >> $HOME/sift-install.log 2>&1 || return 1
-
-    return 0
-}
 install_ubuntu_14.04_deps() {
     echoinfo "Updating your APT Repositories ... "
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
@@ -196,6 +171,9 @@ install_ubuntu_14.04_deps() {
     echoinfo "Enabling Universal Repository ... "
     __enable_universe_repository >> $HOME/sift-install.log 2>&1 || return 1
 
+    echoinfo "Enabling Docker Repository ... "
+    __enable_docker_repository >> $HOME/sift-install.log 2>&1 || return 1
+
     echoinfo "Enabling Elastic Repository ... "
     wget -qO - "https://packages.elasticsearch.org/GPG-KEY-elasticsearch" | apt-key add - >> $HOME/sift-install.log 2>&1 || return 1
     add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.5/debian stable main" >> $HOME/sift-install.log 2>&1 || return 1
@@ -218,268 +196,74 @@ install_ubuntu_14.04_deps() {
     return 0
 }
 
-install_ubuntu_12.04_packages() {
-    packages="aeskeyfind
-afflib-tools
-afterglow
-aircrack-ng
-arp-scan
-autopsy
-apache2
-bitpim
-bitpim-lib
-bless
-blt
-build-essential
-bulk-extractor
-cabextract
-clamav
-cryptsetup
-dc3dd
-dconf-tools
-dumbpig
-e2fslibs-dev
-ent
-epic5
-etherape
-exif
-extundelete
-f-spot
-fdupes
-flare
-flasm
-flex
-foremost
-fuse-utils
-g++
-gcc
-gdb
-ghex
-gthumb
-graphviz
-hexedit
-honeyd
-htop
-hydra
-hydra-gtk
-ipython
-kdiff3
-kpartx
-libafflib0
-libafflib-dev
-libbde
-libbde-tools
-libesedb
-libesedb-tools
-libevt
-libevt-tools
-libevtx
-libevtx-tools
-libewf
-libewf-dev
-libewf-python
-libewf-tools
-libfuse-dev
-libfvde
-libfvde-tools
-liblightgrep
-libmsiecf
-libnet1
-libolecf
-libparse-win32registry-perl
-libregf
-libregf-dev
-libregf-python
-libregf-tools
-libssl-dev
-libtext-csv-perl
-libvshadow
-libvshadow-dev
-libvshadow-python
-libvshadow-tools
-libxml2-dev
-maltegoce
-md5deep
-myunity
-nbd-client
-netcat
-netpbm
-nfdump
-ngrep
-ntopng
-okular
-openjdk-6-jdk
-p7zip-full
-phonon
-pv
-pyew
-python
-python-dev
-python-pip
-python-flowgrep
-python-nids
-python-ntdsxtract
-python-pefile
-python-plaso
-python-qt4
-python-tk
-python-volatility
-pytsk3
-rsakeyfind
-safecopy
-sleuthkit
-ssh
-ssdeep
-ssldump
-stunnel4
-tcl
-tcpflow
-tcpstat
-tcptrace
-tofrodos
-transmission
-unrar
-upx-ucl
-vbindiff
-virtuoso-minimal
-winbind
-wine
-wireshark
-xmount
-zenity
-regripper
-jd-gui
-cmospwd
-ophcrack
-ophcrack-cli
-bkhive
-samdump2
-cryptcat
-outguess
-bcrypt
-ccrypt
-readpst
-ettercap-graphical
-driftnet
-tcpreplay
-tcpxtract
-tcptrack
-p0f
-netwox
-lft
-netsed
-socat
-knocker
-nikto
-nbtscan
-radare-gtk
-python-yara
-gzrt
-testdisk
-scalpel
-qemu
-qemu-utils
-gddrescue
-dcfldd
-vmfs-tools
-mantaray
-python-fuse
-samba
-open-iscsi
-curl
-git
-system-config-samba
-libpff
-libpff-dev
-libpff-tools
-libpff-python
-xfsprogs
-gawk
-fuse-exfat
-exfat-utils
-xpdf
-feh
-pyew
-radare
-radare2
-bokken
-pev
-tcpick
-pdftk
-sslsniff
-dsniff
-rar
-xdot
-ubuntu-tweak
-vim
-elasticsearch"
-
-    if [ "$@" = "dev" ]; then
-        packages="$packages"
-    elif [ "$@" = "stable" ]; then
-        packages="$packages"
-    fi
-
-    for PACKAGE in $packages; do
-        __apt_get_install_noinput $PACKAGE >> $HOME/sift-install.log 2>&1
-        ERROR=$?
-        if [ $ERROR -ne 0 ]; then
-            echoerror "Install Failure: $PACKAGE (Error Code: $ERROR)"
-        else
-            echoinfo "Installed Package: $PACKAGE"
-        fi
-    done
-
-    return 0
-}
-
 install_ubuntu_14.04_packages() {
     packages="aeskeyfind
 afflib-tools
 afterglow
 aircrack-ng
+apache2
 arp-scan
 autopsy
-apache2
+bcrypt
 bitpim
 bitpim-lib
+bkhive
 bless
 blt
 build-essential
 bulk-extractor
 cabextract
+ccrypt
 clamav
+cmospwd
+cryptcat
 cryptsetup
+curl
 dc3dd
+dcfldd
 dconf-tools
+docker-engine
+driftnet
+dsniff
 dumbpig
 e2fslibs-dev
+elasticsearch
 ent
 epic5
 etherape
+ettercap-graphical
+exfat-fuse
+exfat-utils
 exif
 extundelete
 f-spot
 fdupes
+feh
 flare
 flasm
 flex
 foremost
 g++
+gawk
 gcc
 gdb
+gddrescue
 ghex
-gthumb
+git
 graphviz
+gthumb
+gzrt
 hexedit
 htop
 hydra
 hydra-gtk
 ipython
 kdiff3
+knocker
 kpartx
-libafflib0
+lft
 libafflib-dev
+libafflib0
 libbde
 libbde-tools
 libesedb
@@ -492,6 +276,7 @@ libewf
 libewf-dev
 libewf-python
 libewf-tools
+libffi-dev
 libfuse-dev
 libfvde
 libfvde-tools
@@ -500,6 +285,10 @@ libmsiecf
 libnet1
 libolecf
 libparse-win32registry-perl
+libpff
+libpff-dev
+libpff-python
+libpff-tools
 libregf
 libregf-dev
 libregf-python
@@ -512,117 +301,95 @@ libvshadow-python
 libvshadow-tools
 libxml2-dev
 maltegoce
+mantaray
 md5deep
+mongodb-clients
+mongodb-server
 nbd-client
+nbtscan
 netcat
 netpbm
+netsed
+netwox
 nfdump
 ngrep
+nikto
 ntopng
 okular
+open-iscsi
 openjdk-6-jdk
+ophcrack
+ophcrack-cli
+outguess
+p0f
 p7zip-full
+pdftk
+pev
 phonon
 pv
 pyew
+pyew
 python
 python-dev
-python-pip
 python-flowgrep
+python-fuse
 python-nids
 python-ntdsxtract
 python-pefile
+python-pip
 python-plaso
 python-qt4
 python-tk
 python-volatility
+python-yara
 pytsk3
+qemu
+qemu-utils
+radare
+radare-gtk
+radare2
+rar
+readpst
+regripper
 rsakeyfind
 safecopy
+samba
+samdump2
+scalpel
 sleuthkit
+socat
 ssdeep
 ssldump
+sslsniff
 stunnel4
+system-config-samba
 tcl
 tcpflow
+tcpick
+tcpreplay
 tcpstat
 tcptrace
+tcptrack
+tcpxtract
+testdisk
 tofrodos
 transmission
+ubuntu-tweak
 unity-control-center
 unrar
 upx-ucl
 vbindiff
+vim
 virtuoso-minimal
+vmfs-tools
 winbind
 wine
 wireshark
-xmount
-zenity
-regripper
-cmospwd
-ophcrack
-ophcrack-cli
-bkhive
-samdump2
-cryptcat
-outguess
-bcrypt
-ccrypt
-readpst
-ettercap-graphical
-driftnet
-tcpreplay
-tcpxtract
-tcptrack
-p0f
-netwox
-lft
-netsed
-socat
-knocker
-nikto
-nbtscan
-radare-gtk
-python-yara
-gzrt
-testdisk
-scalpel
-qemu
-qemu-utils
-gddrescue
-dcfldd
-vmfs-tools
-mantaray
-python-fuse
-samba
-open-iscsi
-curl
-git
-system-config-samba
-libpff
-libpff-dev
-libpff-tools
-libpff-python
-xfsprogs
-gawk
-exfat-fuse
-exfat-utils
-xpdf
-feh
-pyew
-radare
-radare2
-pev
-tcpick
-pdftk
-sslsniff
-dsniff
-rar
 xdot
-ubuntu-tweak
-vim
-elasticsearch"
+xfsprogs
+xmount
+xpdf
+zenity"
 
     if [ "$@" = "dev" ]; then
         packages="$packages"
@@ -643,8 +410,8 @@ elasticsearch"
     return 0
 }
 
-install_ubuntu_12.04_pip_packages() {
-    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT python-magic argparse unicodecsv stix stix-validator"
+install_ubuntu_14.04_pip_packages() {
+    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT python-magic argparse unicodecsv stix stix-validator timesketch lxml ioc_writer colorama"
     pip_pre_packages="bitstring"
 
     if [ "$@" = "dev" ]; then
@@ -680,9 +447,6 @@ install_ubuntu_12.04_pip_packages() {
     return 0
 }
 
-install_ubuntu_14.04_pip_packages() {
-    install_ubuntu_12.04_pip_packages $@
-}
 
 # Global: Works on 12.04 and 14.04
 install_perl_modules() {
@@ -897,35 +661,6 @@ configure_ubuntu_sift_vm() {
   fi
 }
 
-# 12.04 SIFT VM Configuration Function
-configure_ubuntu_12.04_sift_vm() {
-  # Does not WORK in 14.04
-	sudo -u $SUDO_USER dconf write /desktop/unity/launcher/favorites "['nautilus.desktop', 'gnome-terminal.desktop', 'firefox.desktop', 'gnome-screenshot.desktop', 'gcalctool.desktop', 'bless.desktop', 'autopsy.desktop', 'wireshark.desktop']"  >> $HOME/sift-install.log 2>&1
-
-  # Works in 12.04 and 14.04
-  sudo -u $SUDO_USER gsettings set org.gnome.desktop.background picture-uri file:///usr/share/sift/images/forensics_blue.jpg  >> $HOME/sift-install.log 2>&1
-
-	if [ ! -d $HOME/.config/autostart ]; then
-		sudo -u $SUDO_USER mkdir -p $HOME/.config/autostart
-	fi
-
-  # Works in 14.04 too.
-	if [ ! -L $HOME/.config/autostart ]; then
-		sudo -u $SUDO_USER cp /usr/share/sift/other/gnome-terminal.desktop $HOME/.config/autostart
-	fi
-    
-    # Works in 14.04 too
-	if [ ! -e /usr/share/unity-greeter/logo.png.ubuntu ]; then
-		sudo cp /usr/share/unity-greeter/logo.png /usr/share/unity-greeter/logo.png.ubuntu
-		sudo cp /usr/share/sift/images/login_logo.png /usr/share/unity-greeter/logo.png
-	fi
-
-  # Works in 12.04 only
-	gsettings set com.canonical.unity-greeter background file:///usr/share/sift/images/forensics_blue.jpg >> $HOME/sift-install.log 2>&1
-  
-  chown -R $SUDO_USER:$SUDO_USER $HOME
-}
-
 # 14.04 SIFT VM Configuration Function
 configure_ubuntu_14.04_sift_vm() {
   sudo -u $SUDO_USER gsettings set com.canonical.Unity.Launcher favorites "['application://nautilus.desktop', 'application://gnome-terminal.desktop', 'application://firefox.desktop', 'application://gnome-screenshot.desktop', 'application://gcalctool.desktop', 'application://bless.desktop', 'application://autopsy.desktop', 'application://wireshark.desktop']" >> $HOME/sift-install.log 2>&1
@@ -996,8 +731,8 @@ if [ $ARCH != "64" ]; then
     exit 2
 fi
 
-if [ $VER != "12.04" ] && [ $VER != "14.04" ]; then
-    echo "SIFT is only installable on Ubuntu 12.04 or 14.04 at this time."
+if [ $VER != "14.04" ]; then
+    echo "SIFT is only installable on Ubuntu 14.04 at this time."
     exit 3
 fi
 
