@@ -12,6 +12,8 @@ Welcome to the SANS Investigative Forensic Toolkit Installation Bootstrap Script
 
 **Parts of this script were borrowed from SaltStack's bootstrap script! Thanks!**
 
+**Note:** 12.04 is no longer supported going forward.
+
 Documentation
 =============
 Check out the latest documentation for SIFT at http://sift.readthedocs.org/en/latest
