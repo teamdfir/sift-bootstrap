@@ -480,6 +480,9 @@ install_sift_files() {
   echoinfo "SIFT VM: Installing SIFT Files"
 	CDIR=$(pwd)
 	git clone --recursive https://github.com/sans-dfir/sift-files /tmp/sift-files >> $HOME/sift-install.log 2>&1
+	if [ "$@" = "dev" ]; then
+		git checkout dev
+	fi
 	cd /tmp/sift-files
 	bash install.sh >> $HOME/sift-install.log 2>&1
 	cd $CDIR
