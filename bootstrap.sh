@@ -411,7 +411,7 @@ zenity"
 }
 
 install_ubuntu_14.04_pip_packages() {
-    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT python-magic argparse unicodecsv stix stix-validator timesketch lxml ioc_writer colorama"
+    pip_packages="rekall docopt python-evtx python-registry six construct pyv8 pefile analyzeMFT python-magic argparse unicodecsv stix stix-validator timesketch lxml ioc_writer colorama usnparser windowsprefetch"
     pip_pre_packages="bitstring"
 
     if [ "$@" = "dev" ]; then
