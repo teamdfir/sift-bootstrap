@@ -331,6 +331,7 @@ pyew
 pyew
 python
 python-dev
+python-dfvfs
 python-flowgrep
 python-fuse
 python-nids
