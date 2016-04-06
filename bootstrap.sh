@@ -184,7 +184,7 @@ install_ubuntu_14.04_deps() {
     echoinfo "Adding SIFT Repository: $@"
     add-apt-repository -y ppa:sift/$@  >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Adding GIFT Ropository: Stable"
+    echoinfo "Adding GIFT Repository: Stable"
     add-apt-repository -y ppa:gift/stable >> $HOME/sift-install.log 2>&1 || return 1
 
     echoinfo "Updating Repository Package List ..."
