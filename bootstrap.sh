@@ -165,7 +165,7 @@ install_ubuntu_14.04_deps() {
     echoinfo "Updating your APT Repositories ... "
     apt-get update >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Installing Python Software Properies ... "
+    echoinfo "Installing Python Software Properties ... "
     __apt_get_install_noinput software-properties-common >> $HOME/sift-install.log 2>&1  || return 1
 
     echoinfo "Enabling Universal Repository ... "
