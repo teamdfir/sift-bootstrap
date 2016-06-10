@@ -314,7 +314,6 @@ netwox
 nfdump
 ngrep
 nikto
-ntopng
 okular
 open-iscsi
 openjdk-6-jdk
