@@ -174,10 +174,6 @@ install_ubuntu_14.04_deps() {
     echoinfo "Enabling Docker Repository ... "
     __enable_docker_repository >> $HOME/sift-install.log 2>&1 || return 1
 
-    echoinfo "Enabling Elastic Repository ... "
-    wget -qO - "https://packages.elasticsearch.org/GPG-KEY-elasticsearch" | apt-key add - >> $HOME/sift-install.log 2>&1 || return 1
-    add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.5/debian stable main" >> $HOME/sift-install.log 2>&1 || return 1
-
     echoinfo "Adding Ubuntu Tweak Repository"
     add-apt-repository -y ppa:tualatrix/ppa  >> $HOME/sift-install.log 2>&1 || return 1
 
@@ -227,7 +223,6 @@ driftnet
 dsniff
 dumbpig
 e2fslibs-dev
-elasticsearch
 ent
 epic5
 etherape
@@ -303,8 +298,6 @@ libxml2-dev
 maltegoce
 mantaray
 md5deep
-mongodb-clients
-mongodb-server
 nbd-client
 nbtscan
 netcat
@@ -367,6 +360,7 @@ tcl
 tcpflow
 tcpick
 tcpreplay
+tcpslice
 tcpstat
 tcptrace
 tcptrack
@@ -452,27 +446,6 @@ install_ubuntu_14.04_pip_packages() {
 install_perl_modules() {
 	# Required by macl.pl script
 	perl -MCPAN -e "install Net::Wigle" >> $HOME/sift-install.log 2>&1
-}
-
-install_kibana() {
-  CDIR=$(pwd)
-  cd /tmp
-  wget "https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz"  >> $HOME/sift-install.log 2>&1
-  tar -zxf kibana-3.1.0.tar.gz  >> $HOME/sift-install.log 2>&1
-  cd /tmp/kibana-3.1.0/ >> $HOME/sift-install.log 2>&1
-  mkdir -p /var/www/html/kibana
-  cp -r . /var/www/html/kibana >> $HOME/sift-install.log 2>&1
-  cd $CDIR
-}
-
-configure_elasticsearch() {
-	if ! grep -i "http.cors.enabled" /etc/elasticsearch/elasticsearch.yml > /dev/null 2>&1
-	then
-		echo "http.cors.enabled: true" >> /etc/elasticsearch/elasticsearch.yml
-	fi
-
-  update-rc.d elasticsearch defaults 95 10 >> $HOME/sift-install.log 2>&1
-  service elasticsearch start  >> $HOME/sift-install.log 2>&1
 }
 
 install_sift_files() {
@@ -794,7 +767,6 @@ if [ "$UPGRADE_ONLY" -eq 1 ]; then
   install_ubuntu_${VER}_packages $ITYPE || echoerror "Updating Packages Failed"
   install_ubuntu_${VER}_pip_packages $ITYPE || echoerror "Updating Python Packages Failed"
   install_perl_modules || echoerror "Updating Perl Packages Failed"
-  install_kibana || echoerror "Installing/Updating Kibana Failed"
   install_sift_files || echoerror "Installing/Updating SIFT Files Failed"
 
   echo ""
@@ -839,11 +811,8 @@ if [ "$INSTALL" -eq 1 ] && [ "$CONFIGURE_ONLY" -eq 0 ]; then
     install_ubuntu_${VER}_pip_packages $ITYPE
     configure_cpan
     install_perl_modules
-    install_kibana
     install_sift_files
 fi
-
-configure_elasticsearch
 
 # Configure for SIFT
 configure_ubuntu
