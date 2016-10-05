@@ -163,6 +163,10 @@ remove_bad_old_deps() {
     if [ -e /usr/local/bin/id ]; then
       rm /usr/local/bin/id
     fi
+    # This is no longer a valid repo
+    if [ -e /etc/apt/sources.list.d/google-chrome.list ]; then
+      rm /etc/apt/sources.list.d/google-chrome.list
+    fi
 }
 
 install_ubuntu_14.04_deps() {
