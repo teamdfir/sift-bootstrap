@@ -304,7 +304,6 @@ libvshadow-python
 libvshadow-tools
 libxml2-dev
 maltegoce
-mantaray
 md5deep
 nautilus-open-terminal
 nbd-client
