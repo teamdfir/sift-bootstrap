@@ -340,11 +340,11 @@ python-ntdsxtract
 python-pefile
 python-pip
 python-plaso
+python-pytsk3
 python-qt4
 python-tk
 python-volatility
 python-yara
-pytsk3
 qemu
 qemu-utils
 radare
