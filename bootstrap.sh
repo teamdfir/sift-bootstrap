@@ -160,7 +160,7 @@ remove_bad_old_deps() {
     apt-get remove -y binplist >> $HOME/sift-install.log 2>&1 || return 1
     apt-get remove -y unity-webapps-common  >> $HOME/sift-install.log 2>&1 || return 1
     # This was a tzworks file, /usr/bin/id is core to determining permissions
-    rm /usr/local/bin/id
+    rm -f /usr/local/bin/id
 }
 
 install_ubuntu_14.04_deps() {
