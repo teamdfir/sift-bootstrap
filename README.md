@@ -1,9 +1,14 @@
+# DEPRECATED WARNING
+
+This script is being deprecated in favor of installing using Salt (https://github.com/sans-dfir/sift-saltstack). Please note that the `Salt` version only supports Ubuntu 16.04 (xenial) and forward. Trusty is NOT supported. It is also in **BETA**
+
+# Important Notes
+
 If you have bugs or issues to track please use https://github.com/sans-dfir/sift/issues
 
 **You must use bash not sh to run this script**
 
-Overview
-========
+# Overview 
 Welcome to the SANS Investigative Forensic Toolkit Installation Bootstrap Script. 
 
 **Requirements:** Ubuntu 14.04 LTS Dekstop, Logged In User (as in GUI, not terminal (F1, F2)), Package Manager Not Running
