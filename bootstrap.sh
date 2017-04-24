@@ -242,7 +242,6 @@ extundelete
 f-spot
 fdupes
 feh
-flare
 flasm
 flex
 foremost
