@@ -1,6 +1,8 @@
 # DEPRECATED WARNING
 
-This script is being deprecated in favor of installing using Salt (https://github.com/sans-dfir/sift-saltstack). Please note that the `Salt` version only supports Ubuntu 16.04 (xenial) and forward. Trusty is NOT supported.
+This script/repo has been deprecated in favor of managing and installing SIFT using [saltstack](https://github.com/sans-dfir/sift-saltstack).
+
+The preferred method of installation is done via the [SIFT CLI tool](https://github.com/sans-dfir/sift-cli). This command line utility will download and validate install signatures and SHA hashes before installing.
 
 ## Issues
 
